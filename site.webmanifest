@@ -1,0 +1,32 @@
+{
+  "id": "/",
+  "name": "Cash Mode",
+  "short_name": "Cash Mode",
+  "description": "Educational payment demonstration. No real money is transferred.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#00d632",
+  "icons": [
+    {
+      "src": "icons/app-full-192-v7.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/app-full-512-v7.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/app-maskable-512-v7.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
+

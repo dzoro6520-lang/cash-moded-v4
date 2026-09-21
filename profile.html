@@ -1,0 +1,1275 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="theme-color" content="#0f8038" />
+    
+    
+    
+    
+    
+    
+    <title>Profile - Cash App</title>
+    <!-- Favicon -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script src="dark-mode.js"></script>
+    <style>
+      @font-face {
+        font-family: "CashMarket";
+        font-style: normal;
+        src: url(font/CashSans.ttf);
+        font-display: swap;
+      }
+      :root {
+        --padding-screen: 20px;
+        --app-bg-color: #ffffff;
+        --text-primary: #000000;
+        --text-secondary: #6c757d;
+        --accent-green: #00d54b;
+        --border-color-light: #e9ecef;
+        --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        --font-family: "CashMarket", -apple-system, BlinkMacSystemFont,
+          sans-serif;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        font-family: var(--font-family);
+        background-color: var(--app-bg-color);
+        color: var(--text-primary);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      body.modal-open {
+        overflow: hidden;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      .faceid-selection-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .faceid-selection-modal.show {
+        display: flex;
+        opacity: 1;
+      }
+      .faceid-selection-content {
+        background: white;
+        border-radius: 20px;
+        padding: 30px 20px;
+        max-width: 320px;
+        width: 90%;
+        text-align: center;
+      }
+      .faceid-selection-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #000;
+        margin-bottom: 10px;
+      }
+      .faceid-selection-subtitle {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 30px;
+      }
+      .faceid-option {
+        background: #f8f9fa;
+        border: 2px solid #e0e0e0;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .faceid-option:hover {
+        background: #e9ecef;
+        border-color: #00d54b;
+      }
+      .faceid-option:active {
+        transform: scale(0.98);
+      }
+      .faceid-option-icon {
+        font-size: 40px;
+        margin-bottom: 10px;
+      }
+      .faceid-option-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: #000;
+        margin-bottom: 5px;
+      }
+      .faceid-option-desc {
+        font-size: 13px;
+        color: #666;
+      }
+      .faceid-cancel-btn {
+        background: transparent;
+        border: none;
+        color: #666;
+        font-size: 16px;
+        padding: 15px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      .faceid-register-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(252, 251, 252, 0.98);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .faceid-register-modal.show {
+        display: flex;
+        opacity: 1;
+      }
+      .faceid-register-content {
+        text-align: center;
+      }
+      .faceid-register-video-wrapper {
+        width: 220px;
+        height: 220px;
+        border-radius: 32px;
+        overflow: hidden;
+        background: rgba(0, 0, 0, 0.05);
+        margin: 0 auto 24px;
+      }
+      .faceid-register-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 32px;
+      }
+      .faceid-register-text {
+        color: #000000;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .profile-app-container {
+        max-width: 450px;
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        background-color: var(--app-bg-color);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+      .profile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--padding-screen);
+        flex-shrink: 0;
+      }
+      .header-icon {
+        font-size: 24px;
+        color: var(--text-primary);
+      }
+
+      /* --- **FIXED** Scrollable Content Area --- */
+      .profile-main-content {
+        padding: 0 var(--padding-screen);
+        text-align: center;
+        flex-grow: 1; /* Allows this area to take up remaining space */
+        overflow-y: auto; /* Enables vertical scrolling if content overflows */
+        padding-bottom: 40px; /* Adds space at the bottom of the scroll */
+      }
+      .profile-main-content::-webkit-scrollbar {
+        display: none;
+      } /* Hide scrollbar for aesthetics */
+      .profile-main-content {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      .profile-pic-wrapper {
+        margin: 20px auto 16px;
+        width: 100px;
+        height: 100px;
+        padding: 5px;
+        border-radius: 50%;
+        border: 2px dashed var(--accent-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .profile-pic {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: var(--border-color-light);
+      }
+      .profile-name {
+        font-size: 24px;
+        font-weight: 600;
+      }
+      .profile-cashtag {
+        font-size: 18px;
+        color: var(--text-secondary);
+        margin-top: 4px;
+        margin-bottom: 24px;
+      }
+      .invite-btn {
+        width: 100%;
+        padding: 16px;
+        background-color: var(--accent-green);
+        color: white;
+        border: none;
+        border-radius: 28px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 30px;
+      }
+
+      .settings-list {
+        list-style: none;
+        text-align: left;
+      }
+      .settings-item {
+        border-bottom: 1px solid var(--border-color-light);
+      }
+      .settings-item:last-child {
+        border-bottom: none;
+      }
+
+      .settings-item a {
+        display: flex;
+        align-items: center;
+        padding: 18px 0;
+      }
+      .settings-icon {
+        font-size: 18px;
+        width: 30px;
+        text-align: center;
+        margin-right: 16px;
+        color: var(--text-primary);
+      }
+      .settings-label {
+        font-size: 16px;
+        font-weight: 500;
+        flex-grow: 1;
+      }
+      .notification-dot {
+        width: 8px;
+        height: 8px;
+        background-color: red;
+        border-radius: 50%;
+        margin-right: 12px;
+      }
+
+      .settings-chevron-svg {
+        width: 9px;
+        height: 15px;
+      }
+
+      /* Toggle Setting Item */
+      .toggle-setting-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 0;
+        border-bottom: 1px solid var(--border-color-light);
+      }
+      .toggle-setting-left {
+        display: flex;
+        align-items: center;
+        flex: 1;
+      }
+      .toggle-setting-label {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+      .toggle-setting-desc {
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+      .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 51px;
+        height: 31px;
+        flex-shrink: 0;
+      }
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #e5e5ea;
+        transition: 0.3s;
+        border-radius: 31px;
+      }
+      .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 27px;
+        width: 27px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: 0.3s;
+        border-radius: 50%;
+      }
+      input:checked + .toggle-slider {
+        background-color: var(--accent-green);
+      }
+      input:checked + .toggle-slider:before {
+        transform: translateX(20px);
+      }
+      .faceid-status-message {
+        margin-top: 16px;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 14px;
+        text-align: center;
+        display: none;
+      }
+      .faceid-status-message.show {
+        display: block;
+      }
+      .faceid-status-message.success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .faceid-status-message.error {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      .faceid-status-message.info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+      }
+
+      /* Personal Edit Overlay */
+      .personal-edit-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        z-index: 4000;
+        transform: translateX(100%);
+        transition: transform 0.35s ease-in-out;
+      }
+      .personal-edit-overlay.show {
+        transform: translateX(0);
+      }
+      .edit-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--padding-screen);
+        border-bottom: 1px solid var(--border-color-light);
+      }
+      .edit-back-btn {
+        font-size: 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+      .edit-title {
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .edit-done-btn {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--accent-green);
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+      .edit-done-btn:disabled {
+        color: #a0e6bb;
+      }
+      .edit-content {
+        padding: 24px var(--padding-screen);
+      }
+      .edit-profile-pic {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: var(--border-color-light);
+        display: block;
+        margin: 0 auto 24px;
+        cursor: pointer;
+      }
+      #edit-pic-input {
+        display: none;
+      }
+      .input-group {
+        margin-bottom: 20px;
+      }
+      .input-group label {
+        display: block;
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+      }
+      .input-group input,
+      .input-group select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--border-color-light);
+        border-radius: 8px;
+        font-size: 16px;
+        font-family: inherit;
+        background: var(--app-bg-color);
+        color: var(--text-primary);
+      }
+    </style>
+    <link rel="stylesheet" href="cashapp-shared.css" />
+  <link rel="stylesheet" href="reference-profile.css">
+<link rel="manifest" href="site.webmanifest?v=7">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/app-full-180-v7.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/app-full-192-v7.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Cash Mode">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+<style id="personal-settings-polish">
+.personal-edit-overlay { background:var(--cash-bg,#fff); color:var(--cash-text,#111); height:100dvh; overflow-y:auto; overscroll-behavior:contain; }
+.personal-edit-overlay .edit-header { position:sticky; top:0; z-index:2; padding: max(12px,env(safe-area-inset-top)) 16px 12px; background:var(--cash-bg,#fff); border-bottom:1px solid var(--cash-line,#ddd); }
+.personal-edit-overlay .edit-back-btn,.personal-edit-overlay .edit-done-btn { min-width:44px; min-height:44px; border:0; color:var(--cash-text,#111); }
+.personal-edit-overlay .edit-done-btn { padding:8px 18px; border-radius:24px; background:var(--cash-text,#111); color:var(--cash-bg,#fff); }
+.personal-edit-overlay .edit-done-btn:disabled { opacity:.35; }
+.personal-edit-overlay .edit-content { width:min(100%,460px); margin:auto; box-sizing:border-box; padding:24px 20px max(36px,env(safe-area-inset-bottom)); }
+.personal-edit-overlay .input-group { padding:14px 16px; margin-bottom:12px; border:1px solid var(--cash-line,#ddd); background:var(--cash-surface,#f5f5f5); border-radius:16px; }
+.personal-edit-overlay .input-group label { display:block; font-size:12px; font-weight:600; color:var(--cash-muted,#666); margin-bottom:8px; }
+.personal-edit-overlay .input-group :is(input:not([type="checkbox"]),select) { box-sizing:border-box; width:100%; min-height:42px; padding:8px 0; background:transparent; color:var(--cash-text,#111); border:0; border-radius:0; font:16px var(--font-family,sans-serif); }
+.personal-edit-overlay .input-group small { display:block; color:var(--cash-muted,#666); line-height:1.5; margin:10px 0 18px; }
+.personal-edit-overlay .input-group input[type="checkbox"] { width:18px; height:18px; vertical-align:middle; margin-right:7px; accent-color:#169a4a; }
+.personal-edit-overlay .edit-profile-pic { width:86px; height:86px; margin-bottom:26px; }
+.personal-edit-overlay .toggle-setting-item { padding:16px 0; gap:16px; border-color:var(--cash-line,#ddd); }
+.personal-edit-overlay .toggle-setting-desc { color:var(--cash-muted,#666); line-height:1.4; }
+.personal-edit-overlay :is(button,input,select):focus-visible { outline:2px solid #4487dc; outline-offset:3px; }
+</style>
+</head>
+  <body>
+    
+    <header class="header">
+      <a href="home.html" class="header-icon-button" aria-label="Close">
+        <span id="header-close-icon" class="icon-container icon-lg"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M19.823 2.055a0.25 0.25 0 0 1 0.354 0l1.767 1.768a0.25 0.25 0 0 1 0 0.354L14.121 12l7.823 7.823a0.25 0.25 0 0 1 0 0.354l-1.767 1.767a0.25 0.25 0 0 1-0.354 0L12 14.121l-7.823 7.823a0.25 0.25 0 0 1-0.354 0l-1.768-1.767a0.25 0.25 0 0 1 0-0.354L9.88 12 2.055 4.177a0.25 0.25 0 0 1 0-0.354l1.768-1.768a0.25 0.25 0 0 1 0.354 0L12 9.88l7.823-7.824z"/></svg></span>
+      </a>
+      <div class="header-icons">
+        <button class="header-icon-button" aria-label="QR Code">
+          <span id="header-qr-icon" class="icon-container icon-md"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M11 11.5a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5H2A1.5 1.5 0 0 1 0.5 22v-9A1.5 1.5 0 0 1 2 11.5h9zm12.25 4a0.25 0.25 0 0 1 0.25 0.25V22a1.5 1.5 0 0 1-1.5 1.5h-6.25a0.25 0.25 0 0 1-0.25-0.25v-2.5a0.25 0.25 0 0 1 0.25-0.25h4.75v-4.75a0.25 0.25 0 0 1 0.25-0.25h2.5zm-19.75 5h6v-6h-6v6zM17 12a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm5-11.5A1.5 1.5 0 0 1 23.5 2v6A1.5 1.5 0 0 1 22 9.5h-6A1.5 1.5 0 0 1 14.5 8V2A1.5 1.5 0 0 1 16 0.5h6zM10 5a2 2 0 1 1 0 4 2 2 0 0 1 0-4zM8.25 0.5A0.25 0.25 0 0 1 8.5 0.75v2.5A0.25 0.25 0 0 1 8.25 3.5H3.5v4.75A0.25 0.25 0 0 1 3.25 8.5h-2.5A0.25 0.25 0 0 1 0.5 8.25V2A1.5 1.5 0 0 1 2 0.5h6.25zm9.25 6h3v-3h-3v3z"/></svg></span>
+        </button>
+        <button class="header-icon-button" aria-label="Upload">
+          <span id="header-share-icon" class="icon-container icon-md"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M18 0a4 4 0 1 1-2.372 7.22l-6.685 4.114a4.024 4.024 0 0 1 0 1.331l6.685 4.114a4 4 0 1 1-1.572 2.555L7.37 15.22a4 4 0 1 1 0-6.44l6.685-4.115A4 4 0 0 1 18 0zm0 18.75a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5zm-13-8a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5zm13-8a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5z"/></svg></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <section class="profile-info">
+        <div
+          class="profile-picture-container"
+          id="main-profile-picture-container"
+        >
+          <img
+            src=""
+            alt="Profile Picture"
+            class="profile-picture"
+            id="main-profile-pic"
+          />
+          <div class="camera-icon">
+            <span id="profile-camera-icon"
+              class="icon-container icon-camera"
+            ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V9a3 3 0 0 1 3-3h14zm-7 2.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 1.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zm0-8c1.173 0 2.075 0.294 2.697 0.605 0.31 0.155 0.548 0.313 0.715 0.439a3.444 3.444 0 0 1 0.26 0.215l0.02 0.02 0.01 0.008 0.002 0.003 0.002 0.001v0.001l-1.412 1.416 0.01 0.01-0.01-0.008a1.357 1.357 0 0 0-0.081-0.066 2.711 2.711 0 0 0-0.41-0.25C13.425 4.207 12.827 4 12 4s-1.425 0.206-1.803 0.395c-0.19 0.095-0.327 0.187-0.41 0.249A1.36 1.36 0 0 0 9.705 4.71l-0.01 0.009 0.011-0.011-1.412-1.416V3.291L8.296 3.29l0.003-0.003 0.009-0.008 0.02-0.02 0.06-0.055a3.46 3.46 0 0 1 0.2-0.16C8.755 2.918 8.993 2.76 9.303 2.605 9.925 2.295 10.827 2 12 2z"/></svg></span>
+          </div>
+        </div>
+        <h1 class="profile-name" id="main-profile-name"></h1>
+        <div class="cashtag" id="main-cashtag-container">
+          <span id="main-cashtag"></span>
+          <svg
+            class="cashtag-chevron"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="margin-left: 4px"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </section>
+
+      <!-- ACTION LINKS -->
+      <a href="#" class="list-item" id="personal-btn">
+        <div class="list-item-icon-bg gray">
+          <span id="action-edit-icon" class="icon-container icon-xs"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M16.438 3a1 1 0 0 1 0.708 0.294l3.562 3.575a1 1 0 0 1 0 1.411l-10.33 10.367a1.004 1.004 0 0 1-0.265 0.19l-0.101 0.044-5.67 2.06a1.001 1.001 0 0 1-1.28-1.29l2.093-5.617 0.042-0.099c0.048-0.095 0.111-0.182 0.187-0.258L15.729 3.294l0.074-0.066C15.981 3.081 16.206 3 16.438 3zM6.953 14.935l-1.26 3.385 3.426-1.244 9.469-9.502-2.15-2.158-9.485 9.519z"/></svg></span>
+        </div>
+        <div class="list-item-text-container">
+          <div class="list-item-title">Edit profile</div>
+          <div class="list-item-subtitle">Update your profile info</div>
+        </div>
+        <svg
+          class="chevron"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="width: 20px; height: 20px"
+        >
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+      <a href="#" class="list-item">
+        <div class="list-item-icon-bg green">
+          <span id="action-add-icon" class="icon-container icon-xs"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M13 11h9v2h-9v9h-2v-9H2v-2h9V2h2v9z"/></svg></span>
+        </div>
+        <div class="list-item-text-container">
+          <div class="list-item-title">Invite friends</div>
+          <div class="list-item-subtitle">Get $15</div>
+        </div>
+        <svg
+          class="chevron"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="width: 20px; height: 20px"
+        >
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+
+      <hr class="divider" />
+
+      <main>
+        <h2 class="settings-title">Account & settings</h2>
+        <nav>
+          <a href="#" data-open-personal class="list-item">
+            <span id="setting-personal-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 12c5.274 0 10 3.362 10 8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1c0-4.638 4.726-8 10-8zm0 2c-4.159 0-7.256 2.308-7.882 5h15.764c-0.626-2.692-3.723-5-7.882-5zm0-11.5a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg></span>
+            <span class="settings-item-text">Personal</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="list-item">
+            <span id="setting-linked-banks-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12.225 2.695l0.222 0.038 0.137 0.038c0.314 0.102 0.588 0.287 0.805 0.423l8.645 5.46A1.001 1.001 0 0 1 21.5 10.5H20V19h2v2H2v-2h2v-8.5H2.5a1 1 0 0 1-0.534-1.846l8.645-5.46 0.2-0.126c0.212-0.131 0.463-0.27 0.742-0.335l0.222-0.038a2 2 0 0 1 0.45 0zM6 10.5V19h5v-8.5H6zm7 0V19h5v-8.5h-5zm-1.006-5.808L11.68 4.885 5.956 8.5h12.088L12.32 4.885a6.736 6.736 0 0 0-0.314-0.193c-0.002 0-0.004-0.003-0.006-0.004l-0.006 0.004z"/></svg></span>
+            <span class="settings-item-text">Linked banks</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="list-item">
+            <span id="setting-linked-apps-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12.25 3.5a5.749 5.749 0 0 1 5.743 5.505 5.75 5.75 0 0 1 5.5 5.45L23.5 14.75a5.75 5.75 0 0 1-5.75 5.75h-6a5.75 5.75 0 0 1-5.744-5.507H5.954A5.75 5.75 0 0 1 6.25 3.5h6zm5.477 7.5c-0.74 2.32-2.912 4-5.477 4H8.009a3.75 3.75 0 0 0 3.741 3.5h6a3.75 3.75 0 0 0 3.75-3.75l-0.005-0.193A3.75 3.75 0 0 0 17.75 11h-0.023zm-6.17 0.005A3.75 3.75 0 0 0 8.433 13h3.817c1.439 0 2.688-0.81 3.316-2H11.75l-0.193 0.005zM6.25 5.5a3.75 3.75 0 0 0-0.193 7.495L6.25 13h0.022a5.752 5.752 0 0 1 5.182-3.992L11.75 9h4.241a3.75 3.75 0 0 0-3.741-3.5h-6z"/></svg></span>
+            <span class="settings-item-text">Linked apps & businesses</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="list-item" id="privacy-security-btn">
+            <span id="setting-security-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M11.712 2.042a1 1 0 0 1 0.669 0.033l8.493 3.5 0.13 0.066a1 1 0 0 1 0.488 0.82v0.023l0.002 0.056 0.004 0.204a27.836 27.836 0 0 1-0.162 3.212c-0.2 1.81-0.645 4.124-1.67 5.996l-0.213 0.37c-1.11 1.819-2.911 3.218-4.358 4.14-1.44 0.917-2.726 1.475-2.627 1.422a1 1 0 0 1-0.751 0.075l-0.106-0.038h-0.002l-0.005-0.002-0.012-0.006-0.046-0.02a18.087 18.087 0 0 1-0.747-0.355 21.739 21.739 0 0 1-1.892-1.074c-1.358-0.865-3.026-2.15-4.145-3.806l-0.215-0.337c-1.178-1.93-1.67-4.434-1.883-6.365a27.85 27.85 0 0 1-0.162-3.212c0-0.087 0.002-0.156 0.004-0.204V6.484l0.002-0.016V6.461l0.016-0.144a1 1 0 0 1 0.602-0.742l8.493-3.5 0.093-0.033zm-7.21 5.13c0.001 0.083 0 0.175 0.003 0.273 0.011 0.577 0.047 1.384 0.147 2.293 0.204 1.85 0.658 3.995 1.602 5.542l0.17 0.265c0.89 1.316 2.288 2.422 3.558 3.232 0.667 0.424 1.275 0.753 1.715 0.975 0.112 0.056 0.214 0.103 0.302 0.145a18.787 18.787 0 0 0 2.02-1.121c1.355-0.864 2.853-2.064 3.727-3.496l0.17-0.297c0.829-1.517 1.24-3.511 1.431-5.245 0.1-0.91 0.137-1.716 0.148-2.293 0.002-0.098 0-0.19 0-0.274L12 4.081l-7.497 3.09zM12 9a2 2 0 0 1 1 3.73V15h-2v-2.27A1.997 1.997 0 0 1 12 9z"/></svg></span>
+            <span class="settings-item-text">Security & privacy</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="list-item">
+            <span id="setting-favorites-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M10.988 1.892c0.372-0.89 1.652-0.89 2.024 0l0.034 0.091 2.15 6.618h6.958c1.065 0 1.508 1.364 0.647 1.99l-5.63 4.089 2.15 6.618 0.027 0.094c0.224 0.939-0.813 1.692-1.637 1.19l-0.082-0.055-5.63-4.09-5.628 4.09c-0.862 0.626-2.021-0.216-1.692-1.23l2.149-6.617-5.629-4.09C0.338 9.965 0.781 8.601 1.846 8.6h6.958l2.15-6.617 0.034-0.091zm-0.484 7.949a1.1 1.1 0 0 1-1.046 0.76H4.616l3.917 2.845 0.134 0.116a1.1 1.1 0 0 1 0.306 0.943l-0.04 0.172-1.498 4.604 3.918-2.845 0.15-0.092a1.1 1.1 0 0 1 0.993 0l0.15 0.092 3.917 2.845-1.496-4.604c-0.147-0.453 0.014-0.95 0.4-1.23l3.917-2.846h-4.842a1.1 1.1 0 0 1-0.979-0.597l-0.067-0.163L12 5.234l-1.496 4.607z"/></svg></span>
+            <span class="settings-item-text">Favorites</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="list-item">
+            <span id="setting-limits-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 7.5a1 1 0 0 1 0.809 0.412l8 11A1 1 0 0 1 20 20.5H4a1 1 0 0 1-0.809-1.588l8-11 0.076-0.092A1 1 0 0 1 12 7.5zm-6.036 11h12.072L12 10.2l-6.036 8.3zM21 5.5H3v-2h18v2z"/></svg></span>
+            <span class="settings-item-text">Limits</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="list-item">
+            <span id="setting-notifications-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M15.707 21.207c-0.98 0.98-2.384 1.418-3.707 1.418s-2.727-0.438-3.707-1.418l1.414-1.414c0.52 0.52 1.366 0.832 2.293 0.832s1.773-0.312 2.293-0.832l1.414 1.414zM12 2a6.42 6.42 0 0 1 6.274 5.066l2.203 10.223 0.018 0.111a1 1 0 0 1-0.995 1.1h-15a1.001 1.001 0 0 1-0.978-1.21L5.726 7.065A6.419 6.419 0 0 1 12 2zm0 2a4.419 4.419 0 0 0-4.32 3.487L5.739 16.5h12.524L16.32 7.487A4.419 4.419 0 0 0 12 4z"/></svg></span>
+            <span class="settings-item-text">Notifications</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" data-open-personal class="list-item">
+            <span id="setting-themes-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2c5.523 0 10 4.477 10 10 0 0.033-0.002 0.066-0.005 0.1-0.143 1.428-0.637 2.468-1.49 3.125-0.818 0.63-1.802 0.775-2.624 0.802-0.42 0.014-0.839 0-1.213-0.016-0.388-0.016-0.72-0.032-1.025-0.027-0.504 0.01-0.73 0.078-0.833 0.134l-0.065 0.049c-0.199 0.222-0.307 0.535-0.332 1.02-0.026 0.52 0.045 1.026 0.092 1.683 0.038 0.544 0.076 1.342-0.278 2.002C13.79 21.69 12.96 22 12 22 6.477 22 2 17.523 2 12S6.477 2 12 2zm0 2a8 8 0 1 0 0 16c0.281 0 0.408-0.044 0.45-0.064 0.022-0.01 0.014-0.008 0.015-0.01 0.044-0.083 0.087-0.314 0.045-0.915-0.035-0.488-0.13-1.243-0.095-1.925 0.036-0.72 0.215-1.555 0.84-2.253l0.128-0.132c0.659-0.623 1.57-0.705 2.223-0.717 0.38-0.006 0.782 0.013 1.145 0.028 0.377 0.015 0.727 0.028 1.063 0.016 0.686-0.023 1.154-0.143 1.471-0.387 0.28-0.216 0.601-0.656 0.713-1.694A7.998 7.998 0 0 0 12 4zm-4.25 8.75a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5zm0-4.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5zM15.5 7.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5zM11.25 6a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z"/></svg></span>
+            <span class="settings-item-text">Themes</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" class="list-item">
+            <span id="setting-documents-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M19 2.5a1.002 1.002 0 0 1 0.956 1.294c-0.927 3.011-0.59 5.313-0.157 7.85 0.436 2.556 0.974 5.357 0.18 9.066-0.1 0.46-0.508 0.79-0.979 0.79H5a1 1 0 0 1-0.977-1.21c0.704-3.29 0.243-5.74-0.196-8.31-0.441-2.586-0.855-5.286 0.218-8.774l0.06-0.151A1 1 0 0 1 5 2.5h14zm-13.24 2C5.086 7.174 5.4 9.308 5.799 11.645c0.387 2.27 0.853 4.733 0.395 7.855h11.977c0.48-2.901 0.06-5.16-0.344-7.52-0.385-2.258-0.75-4.6-0.122-7.48H5.761zM15 10H8V8h7v2z"/></svg></span>
+            <span class="settings-item-text">Documents</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+          <a href="#" data-open-personal class="list-item">
+            <span id="setting-support-icon"
+              class="icon-container icon-sm setting-item-icon"
+            ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 18a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm0-16c3.45 0 6 2.613 6 5.92 0 1.67-0.68 3.047-1.798 4.014-0.876 0.758-1.991 1.238-3.202 1.452V16h-2v-4.44l0.938-0.058 0.227-0.019c1.127-0.109 2.07-0.493 2.729-1.062C15.577 9.83 16 9.004 16 7.92 16 5.72 14.35 4 12 4 9.605 4 7.93 5.77 7.483 8.108L6.5 7.921 5.518 7.732C6.096 4.705 8.409 2 12 2z"/></svg></span>
+            <span class="settings-item-text">Support</span>
+            <svg
+              class="chevron"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="width: 20px; height: 20px"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </a>
+        </nav>
+      </main>
+
+      <a href="#" class="list-item" id="logout-btn"><span class="icon-container icon-sm setting-item-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="settings-item-text">Log Out</span></a><footer class="page-footer"><p class="footer-text">Educational demonstration. No real money is transferred.</p></footer>
+    </div>
+
+    
+<!-- Personal Edit Overlay -->
+    <div class="personal-edit-overlay" id="personal-edit-overlay">
+      <header class="edit-header">
+        <button class="edit-back-btn" id="edit-back-btn">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <h2 class="edit-title">Personal</h2>
+        <button class="edit-done-btn" id="edit-done-btn" disabled>Done</button>
+      </header>
+      <main class="edit-content">
+        <img
+          src=""
+          alt="Edit Profile Picture"
+          class="edit-profile-pic"
+          id="edit-profile-pic"
+        />
+        <input type="file" id="edit-pic-input" accept="image/*" />
+        <div class="input-group">
+          <label for="edit-full-name">Full Name</label>
+          <input type="text" id="edit-full-name" />
+        </div>
+        <div class="input-group">
+          <label for="edit-cashtag">Cashtag</label>
+          <input type="text" id="edit-cashtag" />
+        </div>
+        <div class="input-group">
+          <label for="edit-account-number">Account Number</label>
+          <input type="text" id="edit-account-number" />
+        </div>
+        <div class="input-group">
+          <label for="edit-routing-number">Routing Number</label>
+          <input type="text" id="edit-routing-number" />
+        </div>
+        <h3 style="margin:30px 0 14px;text-align:left">App settings</h3>
+        <div class="input-group">
+          <label for="personal-balance">Displayed cash balance</label>
+          <input type="number" id="personal-balance" min="0" step="0.01" inputmode="decimal" />
+        </div>
+        <div class="input-group">
+          <label for="personal-pay-mode">Default Pay mode</label>
+          <select id="personal-pay-mode"><option value="1">Mode 1</option><option value="2">Mode 2</option><option value="3">Mode 3</option><option value="4">Mode 4</option></select>
+        </div>
+        <div class="input-group">
+          <label for="personal-search-mode">Recipient search</label>
+          <select id="personal-search-mode"><option value="cashtag">Cashtag only</option><option value="tiktok">TikTok only</option><option value="both">Cashtag and TikTok</option></select>
+        </div>
+        <div class="input-group">
+          <label for="personal-mode2-style">Mode 2 appearance</label>
+          <select id="personal-mode2-style"><option value="dark">Dark</option><option value="white">Light</option></select>
+        </div>
+        <div class="input-group">
+          <label for="personal-mode4-style">Mode 4 appearance</label>
+          <select id="personal-mode4-style"><option value="dark">Dark</option><option value="white">Light</option></select>
+          <label for="personal-mode4-faceid"><input type="checkbox" id="personal-mode4-faceid"> Mode 4 iOS Face ID animation</label>
+          <small>Demo animation before adding or sending money on iPhone/iPad. Not biometric authentication.</small>
+          <label for="personal-mode3-style">Mode 3 appearance</label>
+          <select id="personal-mode3-style"><option value="dark">Dark</option><option value="white">Light</option></select>
+        </div>
+        <div class="input-group">
+          <label for="personal-success-note">Payment success note</label>
+          <input type="text" id="personal-success-note" maxlength="80" placeholder="Optional note shown after payment" />
+        </div>
+        <div class="toggle-setting-item">
+          <div class="toggle-setting-left"><i class="fa-solid fa-moon" style="font-size:20px;margin-right:12px"></i><div><div class="toggle-setting-label">Dark mode</div><div class="toggle-setting-desc">Use the dark app appearance</div></div></div>
+          <label class="toggle-switch"><input type="checkbox" id="personal-dark-mode"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-setting-item">
+          <div class="toggle-setting-left"><i class="fa-solid fa-face-smile" style="font-size:20px;margin-right:12px"></i><div><div class="toggle-setting-label">Face ID payments</div><div class="toggle-setting-desc">Show verification before payments</div></div></div>
+          <label class="toggle-switch"><input type="checkbox" id="personal-face-id"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="toggle-setting-item">
+          <div class="toggle-setting-left"><i class="fa-solid fa-mobile-screen" style="font-size:20px;margin-right:12px"></i><div><div class="toggle-setting-label">Mode 3 Face ID</div><div class="toggle-setting-desc">Use Face ID in Mode 3</div></div></div>
+          <label class="toggle-switch"><input type="checkbox" id="personal-mode3-face-id"><span class="toggle-slider"></span></label>
+        </div>
+      </main>
+    </div>
+
+    <!-- Privacy & Security Modal -->
+    <div class="personal-edit-overlay" id="privacy-security-overlay">
+      <div class="edit-header">
+        <button class="edit-back-btn" id="privacy-back-btn">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <h2>Privacy & Security</h2>
+        <div style="width: 24px;"></div>
+      </div>
+      <main class="edit-content">
+        <div class="toggle-setting-item">
+          <div class="toggle-setting-left">
+            <i class="fa-solid fa-face-smile" style="font-size: 20px; margin-right: 12px;"></i>
+            <div>
+              <div class="toggle-setting-label">Face ID Payment</div>
+              <div class="toggle-setting-desc">Verify with Face ID before payments</div>
+            </div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="faceIdToggle" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div id="faceIdStatus" class="faceid-status-message"></div>
+      </main>
+    </div>
+
+    <!-- Face ID Selection Modal -->
+    <div id="faceIdSelectionModal" class="faceid-selection-modal">
+      <div class="faceid-selection-content">
+        <h2 class="faceid-selection-title">Choose Face ID Style</h2>
+        <p class="faceid-selection-subtitle">Select your preferred Face ID animation</p>
+        
+        <div class="faceid-option" data-type="iphone13">
+          <div class="faceid-option-icon">📱</div>
+          <div class="faceid-option-name">Face ID 13</div>
+          <div class="faceid-option-desc">Classic centered animation</div>
+        </div>
+        
+        <div class="faceid-option" data-type="iphone17">
+          <div class="faceid-option-icon">🔒</div>
+          <div class="faceid-option-name">Face ID iPhone 17</div>
+          <div class="faceid-option-desc">Dynamic Island capsule style</div>
+        </div>
+        
+        <button class="faceid-cancel-btn" id="faceIdSelectionCancel">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Face ID Registration Modal -->
+    <div id="faceIdRegisterModal" class="faceid-register-modal">
+      <div class="faceid-register-content">
+        <div class="faceid-register-video-wrapper">
+          <video id="faceIdRegisterVideo" class="faceid-register-video" src="icons/faceIDvideo.mp4" playsinline muted loop></video>
+        </div>
+        <p class="faceid-register-text">Setting up Face ID...</p>
+      </div>
+    </div>
+
+    <script>
+      const userProfileKey = "cashAppUserProfile";
+      const defaultProfile = {
+        fullName: "Jane Doe",
+        cashtag: "waldoapp",
+        accountNumber: "****3186",
+        routingNumber: "****715",
+        profilePic: "",
+      };
+      let userProfile = {};
+
+      // DOM Elements
+      const mainProfilePic = document.getElementById("main-profile-pic");
+      const mainProfileName = document.getElementById("main-profile-name");
+      const mainCashtag = document.getElementById("main-cashtag");
+      const personalBtn = document.getElementById("personal-btn");
+      const personalEditOverlay = document.getElementById(
+        "personal-edit-overlay"
+      );
+      const editBackBtn = document.getElementById("edit-back-btn");
+      const editDoneBtn = document.getElementById("edit-done-btn");
+      const editProfilePic = document.getElementById("edit-profile-pic");
+      const editPicInput = document.getElementById("edit-pic-input");
+      const editFullName = document.getElementById("edit-full-name");
+      const editCashtag = document.getElementById("edit-cashtag");
+      const editAccountNumber = document.getElementById("edit-account-number");
+      const editRoutingNumber = document.getElementById("edit-routing-number");
+      const personalSettings = {
+        balance: document.getElementById("personal-balance"),
+        payMode: document.getElementById("personal-pay-mode"),
+        searchMode: document.getElementById("personal-search-mode"),
+        mode2Style: document.getElementById("personal-mode2-style"),
+        mode3Style: document.getElementById("personal-mode3-style"),
+        darkMode: document.getElementById("personal-dark-mode"),
+        faceId: document.getElementById("personal-face-id"),
+        mode3FaceId: document.getElementById("personal-mode3-face-id"),
+        successNote: document.getElementById("personal-success-note")
+      };
+
+      function saveProfile() {
+        localStorage.setItem(userProfileKey, JSON.stringify(userProfile));
+      }
+
+      function loadProfile() {
+        const savedProfile = localStorage.getItem(userProfileKey);
+        userProfile = savedProfile
+          ? JSON.parse(savedProfile)
+          : { ...defaultProfile };
+        userProfile = { ...defaultProfile, ...userProfile };
+        updateMainUI();
+      }
+
+      function updateMainUI() {
+        mainProfileName.textContent = userProfile.fullName;
+        mainCashtag.textContent = `$${userProfile.cashtag}`;
+        if (userProfile.profilePic) {
+          mainProfilePic.src = userProfile.profilePic;
+        } else {
+          mainProfilePic.src = "images/pi2_camera_button_disabled.png"; // Transparent pixel
+        }
+      }
+
+      function openEditOverlay() {
+        editFullName.value = userProfile.fullName;
+        editCashtag.value = userProfile.cashtag;
+        editAccountNumber.value = userProfile.accountNumber;
+        editRoutingNumber.value = userProfile.routingNumber;
+        editProfilePic.src =
+          userProfile.profilePic || "images/pi2_camera_button_disabled.png";
+        personalSettings.balance.value = localStorage.getItem("cashAppBalance") || "0";
+        personalSettings.payMode.value = localStorage.getItem("cashAppPayMode") || "1";
+        personalSettings.searchMode.value = localStorage.getItem("cashAppRecipientSearchMode") || "cashtag";
+        personalSettings.mode2Style.value = localStorage.getItem("cashAppMode2Style") || "dark";
+        document.getElementById('personal-mode4-style').value = localStorage.getItem('cashAppMode4Style') || 'white';
+        document.getElementById('personal-mode4-faceid').checked = localStorage.getItem('cashAppMode4FaceId') === 'true';
+        personalSettings.mode3Style.value = localStorage.getItem("cashAppMode3Style") || "dark";
+        personalSettings.darkMode.checked = localStorage.getItem("cashAppDarkMode") === "true";
+        personalSettings.faceId.checked = localStorage.getItem("cashAppFaceIdEnabled") === "true";
+        personalSettings.mode3FaceId.checked = localStorage.getItem("cashAppMode3Facial") === "true";
+        personalSettings.successNote.value = localStorage.getItem("cashAppSuccessNote") || "";
+
+        editDoneBtn.disabled = true;
+        personalEditOverlay.classList.add("show");
+        document.body.classList.add("modal-open");
+      }
+
+      function closeEditOverlay() {
+        personalEditOverlay.classList.remove("show");
+        document.body.classList.remove("modal-open");
+      }
+
+      function handleSaveChanges() {
+        userProfile.fullName = editFullName.value;
+        userProfile.cashtag = editCashtag.value;
+        userProfile.accountNumber = editAccountNumber.value;
+        userProfile.routingNumber = editRoutingNumber.value;
+
+        const balanceValue = Math.max(0, Number(personalSettings.balance.value) || 0).toFixed(2);
+        localStorage.setItem("cashAppBalance", balanceValue);
+        document.cookie = `cashAppBalance=${encodeURIComponent(balanceValue)}; path=/; max-age=31536000; SameSite=Lax`;
+        localStorage.setItem("cashAppPayMode", personalSettings.payMode.value);
+        localStorage.setItem("cashAppRecipientSearchMode", personalSettings.searchMode.value);
+        localStorage.setItem("cashAppMode2Style", personalSettings.mode2Style.value);
+        localStorage.setItem("cashAppMode3Style", personalSettings.mode3Style.value);
+        localStorage.setItem('cashAppMode4Style', document.getElementById('personal-mode4-style').value);
+        localStorage.setItem('cashAppMode4FaceId', String(document.getElementById('personal-mode4-faceid').checked));
+        localStorage.setItem("cashAppDarkMode", String(personalSettings.darkMode.checked));
+        window.CashTheme?.apply();
+        window.dispatchEvent(new Event('cash-theme-change'));
+        localStorage.setItem("cashAppFaceIdEnabled", String(personalSettings.faceId.checked));
+        localStorage.setItem("cashAppMode3Facial", String(personalSettings.mode3FaceId.checked));
+        localStorage.setItem("cashAppSuccessNote", personalSettings.successNote.value.trim());
+        window.dispatchEvent(new Event("balanceUpdated"));
+
+        saveProfile();
+        updateMainUI();
+        closeEditOverlay();
+      }
+
+      // Event Listeners
+      personalBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        openEditOverlay();
+      });
+      editBackBtn.addEventListener("click", closeEditOverlay);
+      editDoneBtn.addEventListener("click", handleSaveChanges);
+
+      [editFullName, editCashtag, editAccountNumber, editRoutingNumber].forEach(
+        (input) => {
+          input.addEventListener("input", () => {
+            editDoneBtn.disabled = false;
+          });
+        }
+      );
+      Object.values(personalSettings).forEach((control) => control.addEventListener("change", () => { editDoneBtn.disabled = false; }));
+
+      editProfilePic.addEventListener("click", () => {
+        editPicInput.click();
+      });
+      editPicInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const newPicSrc = e.target.result;
+          editProfilePic.src = newPicSrc;
+          userProfile.profilePic = newPicSrc;
+          editDoneBtn.disabled = false;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      // Logout functionality
+      const logoutBtn = document.getElementById("logout-btn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", async (e) => {
+          e.preventDefault();
+          if (window.CashSession) {
+            window.CashSession.logout();
+            return;
+          }
+          
+          // Call logout API
+          try {
+            await fetch('/api/auth/logout', {
+              method: 'POST',
+              credentials: 'include'
+            });
+          } catch (error) {
+            console.warn('Logout API call failed:', error);
+          }
+          
+          // Clear session storage and localStorage
+          sessionStorage.clear();
+          localStorage.removeItem('deviceId');
+          
+          // Force redirect to login page
+          window.location.replace('/index.html');
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", loadProfile);
+
+      // Privacy & Security Modal
+      const privacySecurityBtn = document.getElementById('privacy-security-btn');
+      const privacySecurityOverlay = document.getElementById('privacy-security-overlay');
+      const privacyBackBtn = document.getElementById('privacy-back-btn');
+      const faceIdToggle = document.getElementById('faceIdToggle');
+      const faceIdStatus = document.getElementById('faceIdStatus');
+
+      const FACEID_ENABLED_KEY = 'cashAppFaceIdEnabled';
+      const FACEID_CREDENTIAL_KEY = 'cashAppFaceIdCredential';
+
+      // Load Face ID toggle state
+      function loadFaceIdState() {
+        const enabled = localStorage.getItem(FACEID_ENABLED_KEY) === 'true';
+        if (faceIdToggle) faceIdToggle.checked = enabled;
+      }
+
+      // Check if Web Authentication API is available
+      function isFaceIdAvailable() {
+        return window.PublicKeyCredential !== undefined;
+      }
+
+      // Show status message
+      function showFaceIdStatus(message, type) {
+        faceIdStatus.textContent = message;
+        faceIdStatus.className = 'faceid-status-message show ' + type;
+        setTimeout(() => {
+          faceIdStatus.classList.remove('show');
+        }, 4000);
+      }
+
+      // Register Face ID credential (simulated)
+      async function registerFaceId() {
+        // Simulated Face ID setup - no real biometric authentication
+        localStorage.setItem(FACEID_CREDENTIAL_KEY, 'simulated-' + Date.now());
+        localStorage.setItem(FACEID_ENABLED_KEY, 'true');
+        showFaceIdStatus('✓ Face ID enabled! Payments will show Face ID animation.', 'success');
+        return true;
+      }
+
+      // Face ID selection modal
+      const selectionModal = document.getElementById('faceIdSelectionModal');
+      const selectionCancelBtn = document.getElementById('faceIdSelectionCancel');
+      const faceIdOptions = document.querySelectorAll('.faceid-option');
+
+      faceIdOptions.forEach(option => {
+        option.addEventListener('click', async () => {
+          const faceIdType = option.getAttribute('data-type');
+          localStorage.setItem('cashAppFaceIdType', faceIdType);
+          
+          selectionModal.classList.remove('show');
+          
+          const success = await registerFaceId();
+          if (!success) {
+            faceIdToggle.checked = false;
+          }
+        });
+      });
+
+      selectionCancelBtn.addEventListener('click', () => {
+        selectionModal.classList.remove('show');
+        faceIdToggle.checked = false;
+      });
+
+      // Toggle Face ID
+      if (faceIdToggle) {
+        faceIdToggle.addEventListener('change', async (e) => {
+          if (e.target.checked) {
+            // Show selection modal
+            selectionModal.classList.add('show');
+          } else {
+            // Disable Face ID
+            localStorage.setItem(FACEID_ENABLED_KEY, 'false');
+            localStorage.removeItem(FACEID_CREDENTIAL_KEY);
+            localStorage.removeItem('cashAppFaceIdType');
+            showFaceIdStatus('Face ID disabled for payments', 'info');
+          }
+        });
+      }
+
+      // Privacy & Security modal handlers
+      if (privacySecurityBtn) {
+        privacySecurityBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          loadFaceIdState();
+          privacySecurityOverlay.classList.add('show');
+        });
+      }
+
+      if (privacyBackBtn) {
+        privacyBackBtn.addEventListener('click', () => {
+          privacySecurityOverlay.classList.remove('show');
+        });
+      }
+
+      loadFaceIdState();
+    </script>
+    <nav class="bottom-nav cash-reference-nav" aria-label="Primary navigation">
+        <a href="home.html"
+          ><button
+            class="nav-button"
+            id="nav-balance-display"
+            aria-label="Home"
+          ></button
+        ></a>
+        <a href="card.html"
+          ><button class="nav-button" aria-label="Cards">
+            <svg width="22" height="18" viewBox="0 0 24 21">
+              <path
+                transform="translate(-126.25 -18)"
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M131.25 21H145.25C146.355 21 147.25 21.8954 147.25 23V33C147.25 34.1046 146.355 35 145.25 35H131.25C130.145 35 129.25 34.1046 129.25 33V23C129.25 21.8954 130.145 21 131.25 21ZM126.25 23C126.25 20.2386 128.489 18 131.25 18H145.25C148.011 18 150.25 20.2386 150.25 23V33C150.25 35.7614 148.011 38 145.25 38H131.25C128.489 38 126.25 35.7614 126.25 33V23ZM134.25 24C133.145 24 132.25 24.8954 132.25 26C132.25 27.1046 133.145 28 134.25 28H135.25C136.355 28 137.25 27.1046 137.25 26C137.25 24.8954 136.355 24 135.25 24H134.25Z"
+              />
+            </svg></button
+        ></a>
+        <a href="index.html"
+          ><button class="nav-button" aria-label="Pay">
+            <svg width="14" height="20" viewBox="0 0 15 23">
+              <path
+                transform="translate(-205 -17)"
+                d="M217.675 23.8903C217.923 24.1401 218.336 24.1401 218.569 23.8903L219.811 22.5912C220.075 22.3414 220.06 21.8917 219.782 21.6218C218.805 20.7669 217.671 20.1148 216.442 19.7032L216.835 17.8045C216.919 17.3897 216.611 17 216.199 17H213.794C213.643 17.0016 213.498 17.0551 213.382 17.1515C213.267 17.2479 213.187 17.3814 213.158 17.5296L212.81 19.2185C209.61 19.3834 206.897 21.0173 206.897 24.365C206.897 27.263 209.138 28.5071 211.508 29.3616C213.749 30.221 214.937 30.5408 214.937 31.7499C214.937 32.9941 213.754 33.7236 212.005 33.7236C210.415 33.7236 208.745 33.189 207.453 31.8848C207.393 31.8244 207.322 31.7765 207.243 31.7438C207.165 31.7111 207.081 31.6942 206.996 31.6942C206.911 31.6942 206.827 31.7111 206.748 31.7438C206.67 31.7765 206.599 31.8244 206.539 31.8848L205.197 33.2339C205.071 33.3613 205 33.5338 205 33.7136C205 33.8934 205.071 34.0659 205.197 34.1933C206.241 35.2276 207.562 35.9771 209.069 36.3918L208.701 38.1756C208.617 38.5903 208.92 38.975 209.332 38.98L211.743 39C211.895 39.0007 212.042 38.9482 212.16 38.8516C212.278 38.755 212.359 38.6202 212.388 38.4704L212.736 36.7765C216.586 36.5167 218.932 34.3831 218.932 31.2703C218.932 28.4022 216.596 27.193 213.764 26.2087C212.144 25.6041 210.743 25.1894 210.743 23.9453C210.743 22.7361 212.05 22.2564 213.361 22.2564C215.031 22.2564 216.636 22.9509 217.685 23.9003L217.675 23.8903Z"
+              />
+            </svg></button
+        ></a>
+        <button class="nav-button disabled" aria-label="Search" type="button" aria-disabled="true">
+            <svg width="21" height="21" viewBox="0 0 23 24">
+              <path
+                transform="translate(-276.25 -16.5)"
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M291.75 26.5C291.75 30.0899 288.84 33 285.25 33C281.66 33 278.75 30.0899 278.75 26.5C278.75 22.9101 281.66 20 285.25 20C288.84 20 291.75 22.9101 291.75 26.5ZM290.823 34.1944C289.258 35.3302 287.332 36 285.25 36C280.003 36 275.75 31.7467 275.75 26.5C275.75 21.2533 280.003 17 285.25 17C290.497 17 294.75 21.2533 294.75 26.5C294.75 28.582 294.08 30.5076 292.944 32.0731L297.882 37.0104C298.468 37.5962 298.468 38.546 297.882 39.1317C297.296 39.7175 296.346 39.7175 295.76 39.1317L290.823 34.1944Z"
+              />
+            </svg>
+        </button>
+        <a href="activty.html"
+          ><button class="nav-button" aria-label="Activity">
+            <svg width="22" height="22" viewBox="0 0 24 25">
+              <path
+                transform="translate(-349 -16)"
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M370 28C370 32.9706 365.971 37 361 37C356.029 37 352 32.9706 352 28C352 23.0294 356.029 19 361 19C365.971 19 370 23.0294 370 28ZM373 28C373 34.6274 367.627 40 361 40C354.373 40 349 34.6274 349 28C349 21.3726 354.373 16 361 16C367.627 16 373 21.3726 373 28ZM362.5 24C362.5 23.1716 361.828 22.5 361 22.5C360.172 22.5 359.5 23.1716 359.5 24V27.4893C359.5 28.4591 360.061 29.3414 360.939 29.753L364.363 31.3582C365.113 31.7098 366.007 31.3868 366.358 30.6367C366.71 29.8865 366.387 28.9934 365.637 28.6418L362.5 27.1715V24Z"
+              />
+            </svg></button
+        ></a>
+      </nav>
+<script src="footer.display.js"></script>
+<script src="nav-performance.js"></script>
+<script src="cashapp-shared.js"></script>
+  <script>
+document.querySelectorAll('[data-open-personal]').forEach(link => link.addEventListener('click', event => { event.preventDefault(); document.getElementById('personal-btn').click(); }));
+document.getElementById('main-profile-picture-container').addEventListener('click', () => document.getElementById('personal-btn').click());
+document.getElementById('main-cashtag-container').addEventListener('click', () => document.getElementById('personal-btn').click());
+</script>
+<script>
+      if (new URLSearchParams(location.search).get('settings') === '1') {
+        const openPersonal = () => document.getElementById('personal-btn')?.click();
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',openPersonal,{once:true});
+        else openPersonal();
+      }
+    </script></body>
+</html>
+
+
+

@@ -1,0 +1,542 @@
+:root {
+  --cash-bg: #ffffff;
+  --cash-surface: #f4f4f5;
+  --cash-text: #111111;
+  --cash-muted: #6b6b70;
+  --cash-line: #e5e5e7;
+  --cash-accent: #00b244;
+  --cash-nav-height: 72px;
+}
+
+body.dark-mode,
+html[data-theme="dark"] {
+  --cash-bg: #000000;
+  --cash-surface: #1c1c1e;
+  --cash-text: #ffffff;
+  --cash-muted: #a1a1a6;
+  --cash-line: #2c2c2e;
+}
+
+.cash-shared-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: min(100%, 450px);
+  height: calc(65px + env(safe-area-inset-bottom));
+  padding: 0 18px env(safe-area-inset-bottom);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: var(--cash-bg);
+  border-top: 1px solid var(--cash-line);
+  z-index: 1800;
+}
+
+.cash-shared-nav a {
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cash-muted);
+  text-decoration: none;
+}
+
+.cash-shared-nav .nav-button { width: 44px; height: 44px; padding: 0; border: 0; background: transparent; color: inherit; font-size: 21px; cursor: pointer; }
+.cash-shared-nav a.is-active { color: var(--cash-text); }
+
+.cash-global-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--card-bg-color, var(--cash-bg));
+  color: var(--cash-text);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .18s ease, visibility .18s ease;
+}
+
+.cash-global-loader.is-visible { opacity: 1; visibility: visible; }
+.cash-global-loader[hidden] { display: none !important; }
+[data-cash-inline-loader]:not(.cash-is-loading) { visibility: hidden; }
+.cash-loader-animation.cash-inline-loader { width: 40px; height: 40px; flex: 0 0 40px; }
+.cash-loader-text:empty { display: none; }
+.cash-loader-text span { display: inline-block; animation: cash-loading-dot 1.4s infinite; }
+.cash-loader-text span:nth-child(2) { animation-delay: .2s; }
+.cash-loader-text span:nth-child(3) { animation-delay: .4s; }
+@keyframes cash-loading-dot { 0%,80%,100% { transform: translateY(0); } 40% { transform: translateY(-6px); } }
+.cash-loader-animation { width: 60px; height: 60px; }
+.cash-loader-fallback {
+  width: 56px;
+  height: 56px;
+  position: relative;
+  animation: cash-loader-rotate 1.05s linear infinite;
+}
+.cash-loader-fallback i {
+  position: absolute;
+  left: 19px;
+  top: 3px;
+  width: 18px;
+  height: 24px;
+  border: 8px solid var(--cash-text);
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  transform-origin: 9px 25px;
+}
+.cash-loader-fallback i:nth-child(1) { transform: rotate(-18deg); }
+.cash-loader-fallback i:nth-child(2) { transform: rotate(102deg); }
+.cash-loader-fallback i:nth-child(3) { transform: rotate(222deg); }
+.cash-loader-text { margin: 0; font-size: 14px; font-weight: 600; }
+@keyframes cash-loader-rotate { to { transform: rotate(360deg); } }
+
+.cash-inline-loader { width: 60px; height: 60px; flex: 0 0 60px; }
+.cash-inline-loader svg { display: block; width: 100% !important; height: 100% !important; }
+#suggestedSpinner { width: 60px; height: 60px; margin: 12px auto; }
+#suggestedSpinner.show { display: flex; align-items: center; justify-content: center; }
+#m2SearchSpinner .cash-inline-loader { width: 60px; height: 60px; }
+.m2-spinner-ring::after, .m2-spin-wrap::after, .loading-spinner::after { content: none !important; }
+.savings-page-container, .profile-app-container { padding-bottom: var(--cash-nav-height); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cash-global-loader, .cash-loader-fallback { animation: none; transition: none; }
+}
+
+/* Compact search indicators; payment and balance loaders retain their size. */
+#suggestedSpinner { width:40px; height:40px; margin:10px auto; }
+#suggestedLottieLoader, #m2SearchSpinner .cash-inline-loader { width:40px; height:40px; flex:0 0 40px; }
+
+/* Same five-tab footer artwork and spacing as Activity, including safe-area. */
+.bottom-nav.cash-reference-nav {
+  position: fixed; left: 50%; right: auto; bottom: 0;
+  transform: translateX(-50%); box-sizing: border-box;
+  width: min(100%, 450px); height: calc(65px + env(safe-area-inset-bottom));
+  padding: 0 18px env(safe-area-inset-bottom); display: flex;
+  align-items: center; justify-content: space-around;
+  background: var(--cash-bg); border-top: 1px solid var(--cash-line); z-index: 200;
+}
+.cash-reference-nav a { text-decoration: none; }
+.cash-reference-nav .nav-button {
+  background: none; border: 0; padding: 8px; min-width: 44px; min-height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: inherit; font-size: 16px; font-weight: 600; color: var(--cash-muted); cursor: pointer;
+}
+.cash-reference-nav .nav-button svg { fill: currentColor; }
+.cash-reference-nav .nav-button.active { color: var(--cash-text); }
+.cash-reference-nav .nav-button.disabled { cursor: default; }
+body:has(.cash-reference-nav) { padding-bottom: calc(65px + env(safe-area-inset-bottom)); }
+.cash-global-loader.is-visible { transition: none; }
+
+
+/* Mode 4: isolated video-inspired appearance; modes 1–3 keep their styles. */
+body.pay-mode-4 {
+  --cash-bg:#000; --cash-surface:#191a19; --cash-text:#fff; --cash-muted:#929792; --cash-line:#292d29;
+  --app-bg-color:#000; --card-bg-color:#191a19; --text-primary:#fff; --text-secondary:#929792;
+  --bg-primary:#000; --bg-secondary:#191a19; --profile-bg:#202420;
+  background:var(--cash-bg); color:var(--cash-text);
+}
+body.pay-mode-4.mode4-white {
+  --cash-bg:#fff; --cash-surface:#f1f3f1; --cash-text:#101510; --cash-muted:#666d66; --cash-line:#dfe5df;
+  --app-bg-color:#fff; --card-bg-color:#f1f3f1; --text-primary:#101510; --text-secondary:#666d66;
+  --bg-primary:#fff; --bg-secondary:#f1f3f1; --profile-bg:#e9eee9;
+}
+body.pay-mode-4 .bottom-nav, body.pay-mode-4 .cash-shared-nav {
+  position:fixed; left:50%; right:auto; bottom:max(12px,env(safe-area-inset-bottom));
+  transform:translateX(-50%); width:min(72%,300px); height:54px; box-sizing:border-box;
+  padding:5px 9px; display:flex; align-items:center; justify-content:space-around;
+  border:1px solid var(--cash-line); border-radius:32px; background:var(--cash-surface); box-shadow:0 5px 18px #0002;
+}
+body.pay-mode-4 .bottom-nav a:has([aria-label="Cards"]),
+body.pay-mode-4 .bottom-nav a:has([aria-label="Card"]),
+body.pay-mode-4 .bottom-nav a:has([aria-label="Search"]),
+body.pay-mode-4 .bottom-nav > [aria-label="Search"],
+body.pay-mode-4 .cash-shared-nav > a[aria-label="Card"],
+body.pay-mode-4 .cash-shared-nav > a[aria-label="Profile"] { display:none; }
+body.pay-mode-4 .bottom-nav .nav-button { color:var(--cash-muted); }
+body.pay-mode-4 .bottom-nav .nav-button.active { border-radius:24px; background:var(--cash-line); color:var(--cash-text); min-width:66px; }
+body.pay-mode-4 .card, body.pay-mode-4 .asset-chart-card, body.pay-mode-4 .savings-list-card { border-radius:22px; background:var(--cash-surface); color:var(--cash-text); }
+body.pay-mode-4 #balance-preview-card { background:var(--cash-bg); box-shadow:none; border:0; }
+body.pay-mode-4 #balance-preview-card .balance-amount { font-size:clamp(36px,11vw,48px); letter-spacing:-.045em; }
+body.pay-mode-4 .balance-actions button { background:var(--cash-surface); color:var(--cash-text); border-radius:999px; }
+body.pay-mode-4 .m2-panel { width:100%; max-width:450px; margin:0 auto; height:76dvh; max-height:76dvh; border-radius:28px 28px 0 0; border:0; box-shadow:none; background:var(--cash-bg); }
+body.pay-mode-4 .m2-search-input { border-radius:999px; background:var(--cash-surface); color:var(--cash-text); }
+body.pay-mode-4 #m2Success { background:var(--cash-bg); color:var(--cash-text); }
+body.pay-mode-4 .m2-success-title { color:var(--cash-text); }
+body.pay-mode-4 .m2-review-pay-btn, body.pay-mode-4 .m2-done-btn { border-radius:999px; background:var(--cash-text); color:var(--cash-bg); }
+body.pay-mode-4 .m2-receipt-btn { background:var(--cash-surface); color:var(--cash-text); }
+.mode4-faceid-overlay { position:fixed; inset:0; z-index:15000; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:12px; background:var(--cash-bg); color:var(--cash-text); }
+.mode4-faceid-overlay video { width:110px; height:110px; object-fit:contain; }
+.mode4-faceid-overlay span { font-size:12px; opacity:.65; }
+
+
+/* Mode 4 Pay reference: green screen and unframed three-tab bottom navigation. */
+.m4-icon { display:none; }
+.m4-tools { display:contents; }
+body.pay-mode-4 .m4-icon { display:flex; width:40px; height:40px; flex:0 0 40px; justify-content:center; align-items:center; border:0; border-radius:50%; text-decoration:none; background:var(--cash-surface); color:var(--cash-text); cursor:pointer; }
+body.pay-mode-4 .m4-icon svg { width:22px; height:22px; }
+body.pay-mode-4 .m4-tools { display:flex; gap:10px; align-items:center; }
+body.pay-mode-4 .pay-header > .header-icon, body.pay-mode-4 .app-header > h1 { display:none; }
+body.pay-mode-4 .m4-tools .profile-icon-link { width:40px; height:40px; border-radius:50%; background:#19c7ee; overflow:hidden; }
+body.pay-mode-4 .m4-tools .profile-icon { width:100%; height:100%; object-fit:cover; }
+body.pay-mode-4.m4-pay-page { background:#00d632 !important; color:#000; }
+html:has(body.pay-mode-4.m4-pay-page) { background:#00d632 !important; }
+body.pay-mode-4.m4-pay-page .pay-app-container { height:100dvh; min-height:560px; box-sizing:border-box; background:#00d632; padding-top:env(safe-area-inset-top); padding-bottom:calc(76px + env(safe-area-inset-bottom)); grid-template-rows:58px minmax(0,1fr); }
+body.pay-mode-4.m4-pay-page .pay-header { height:auto; padding:8px 16px; box-sizing:border-box; }
+body.pay-mode-4.m4-pay-page .m4-icon { background:#ffffff20; color:#000; }
+body.pay-mode-4.m4-pay-page .pay-main { min-height:0; }
+body.pay-mode-4.m4-pay-page .amount-display { min-height:100px; padding:16px; }
+body.pay-mode-4.m4-pay-page .amount-text { color:#000; font-size:clamp(58px,19vw,96px); font-weight:800; letter-spacing:-.065em; }
+body.pay-mode-4.m4-pay-page .keypad-wrapper { padding:0 16px 8px; }
+body.pay-mode-4.m4-pay-page .pay-keypad { gap:clamp(3px,1.5vh,14px) 18px; }
+body.pay-mode-4.m4-pay-page .keypad-btn { min-height:44px; padding:clamp(9px,1.5vh,15px) 6px; font-size:23px; color:#000; }
+body.pay-mode-4.m4-pay-page .pay-actions { margin:20px 0 0; gap:10px; grid-template-columns:1fr 1fr; grid-template-areas:"pool request" "pay pay"; }
+body.pay-mode-4.m4-pay-page .action-btn { min-height:48px; border-radius:999px; font-size:16px; font-weight:600; }
+body.pay-mode-4.m4-pay-page #pay-btn { min-height:50px; padding:12px; }
+body.pay-mode-4.m4-pay-page .bottom-nav {
+  width:min(78%,350px); height:60px; bottom:env(safe-area-inset-bottom); padding:4px 0;
+  border:0; border-radius:0; background:transparent; box-shadow:none;
+}
+body.pay-mode-4.m4-pay-page .bottom-nav > a { flex:1; display:flex; justify-content:center; text-decoration:none; }
+body.pay-mode-4.m4-pay-page .bottom-nav > a:has([aria-label="Cards"]),
+body.pay-mode-4.m4-pay-page .bottom-nav > a:has([aria-label="Card"]),
+body.pay-mode-4.m4-pay-page .bottom-nav > a:has([aria-label="Search"]) { display:none; }
+body.pay-mode-4.m4-pay-page .bottom-nav .nav-button { color:#005e18; min-height:48px; font-size:18px; }
+body.pay-mode-4.m4-pay-page .bottom-nav .nav-button svg { fill:currentColor; }
+body.pay-mode-4.m4-pay-page .bottom-nav .nav-button.active { width:76px; background:#0000000d; color:#000; border-radius:25px; }
+body.pay-mode-4.m4-pay-page #nav-balance-display { color:#005e18; font-size:17px; letter-spacing:-.04em; }
+/* Home keeps the video's neutral cards, with a corresponding light palette. */
+body.pay-mode-4.m4-home-page .app-header { padding:12px 16px; padding-top:max(12px,env(safe-area-inset-top)); height:auto; min-height:64px; }
+body.pay-mode-4.m4-home-page .main-content { padding-left:16px; padding-right:16px; padding-bottom:100px; }
+body.pay-mode-4.m4-home-page #balance-preview-card { padding:20px 0 12px; margin-bottom:8px; }
+body.pay-mode-4.m4-home-page #balance-preview-card .balance-header { font-size:14px; }
+body.pay-mode-4.m4-home-page #balance-preview-card .balance-amount { font-size:44px; line-height:1.15; text-align:left; }
+body.pay-mode-4.m4-home-page .balance-actions { margin-top:32px; gap:12px; }
+body.pay-mode-4.m4-home-page .balance-actions button { min-height:42px; padding:10px; font-size:14px; }
+body.pay-mode-4.m4-home-page .savings-list-card { margin-bottom:14px; padding:20px 16px; border:0; box-shadow:none; border-radius:20px; min-height:115px; }
+body.pay-mode-4.m4-home-page .savings-list-card .title { color:var(--cash-text); font-size:18px; }
+body.pay-mode-4.m4-home-page .savings-list-card .balance { color:var(--cash-text); font-size:28px; letter-spacing:-.04em; }
+body.pay-mode-4.m4-home-page .savings-list-card .subtitle { color:var(--cash-muted); font-size:12px; }
+body.pay-mode-4.m4-home-page .savings-list-card .progress-ring-svg { display:none; }
+body.pay-mode-4.m4-home-page .savings-list-card .icon-container { width:36px; height:36px; }
+body.pay-mode-4.m4-home-page .section-header { color:var(--cash-muted); font-size:14px; margin:18px 0 12px; }
+#m4-information { width:min(85vw,360px); box-sizing:border-box; border:1px solid var(--cash-line); border-radius:20px; padding:24px; background:var(--cash-bg); color:var(--cash-text); }
+#m4-information::backdrop { background:#0008; }
+#m4-information p { line-height:1.5; }
+#m4-information button { min-height:44px; padding:10px 20px; border:0; border-radius:24px; cursor:pointer; }
+@media(max-height:700px) {
+ body.pay-mode-4.m4-pay-page .pay-actions { margin-top:10px; gap:7px; }
+ body.pay-mode-4.m4-pay-page .keypad-btn { padding:6px; }
+ body.pay-mode-4.m4-pay-page .amount-text { font-size:66px; }
+}
+
+
+#m4-card-toggle { display:none; }
+html:has(body.pay-mode-4.m4-home-page), body.pay-mode-4.m4-home-page .main-content { overscroll-behavior-y: contain; }
+body.pay-mode-4 #m4-card-toggle { display:block; margin:0 16px 8px; padding:14px 18px; background:var(--cash-surface); color:var(--cash-text); border:1px solid var(--cash-line); border-radius:16px; font:inherit; text-align:left; cursor:pointer; }
+#m4-settings, #m4-card-preview { box-sizing:border-box; border:1px solid var(--cash-line); background:var(--cash-bg); color:var(--cash-text); padding:24px; border-radius:24px; width:min(92vw,420px); max-height:85dvh; }
+#m4-settings::backdrop, #m4-card-preview::backdrop { background:#0008; }
+#m4-settings h2 { margin-top:0; }
+#m4-settings label { display:block; margin:18px 0; }
+#m4-settings select { display:block; width:100%; margin-top:10px; padding:12px; font:inherit; border-radius:10px; background:var(--cash-surface); color:var(--cash-text); border:1px solid var(--cash-line); }
+#m4-settings p { color:var(--cash-muted); font-size:12px; }
+#m4-settings a { display:block; color:var(--cash-text); padding:14px 0; }
+#m4-settings button { min-height:44px; padding:10px 24px; border:0; border-radius:24px; background:var(--cash-text); color:var(--cash-bg); cursor:pointer; }
+#m4-card-preview { padding:0; height:50dvh; max-height:50dvh; width:min(100%,450px); margin:env(safe-area-inset-top) auto auto; border-radius:0 0 24px 24px; overflow:hidden; }
+#m4-card-preview[open] { display:flex; flex-direction:column; animation:m4-card-reveal .3s ease-out; }
+.m4-preview-bar { display:flex; align-items:center; gap:16px; padding:10px 16px; }
+.m4-preview-bar a { margin-left:auto; color:inherit; font-size:13px; }
+.m4-preview-bar button { background:none; color:inherit; border:0; min-width:44px; height:44px; font-size:26px; cursor:pointer; }
+#m4-card-preview iframe { min-height:0; flex:1; width:100%; border:0; background:var(--cash-bg); }
+@keyframes m4-card-reveal { from { transform:translateY(-100%); } to { transform:translateY(0); } }
+body.pay-mode-4 .m2-panel { width:calc(100% - 24px); max-width:426px; margin:0 auto max(12px,env(safe-area-inset-bottom)); height:58dvh; max-height:58dvh; border-radius:28px; border:1px solid var(--cash-line); box-shadow:0 16px 48px #0003; }
+@media(prefers-reduced-motion:reduce) { #m4-card-preview[open] { animation:none; } }
+
+
+/* Mode 4 reference sheets. All selectors are scoped to protect Modes 1–3. */
+body.pay-mode-4 { --font-family:"CashMarket",-apple-system,BlinkMacSystemFont,sans-serif; font-family:var(--font-family); }
+body.pay-mode-4.m4-home-page #balance-preview-card .balance-amount { font-family:var(--font-family); font-weight:600; }
+body.pay-mode-4 .m2-icon-btn i,body.pay-mode-4 .m2-success-icon-btn i,body.pay-mode-4 .m2-success-check i { display:none; }
+body.pay-mode-4 #m2SearchClose::after,body.pay-mode-4 #m2SuccessClose::after { content:"×"; font:400 38px/1 Arial,sans-serif; }
+body.pay-mode-4 #m2NoteBack::after,body.pay-mode-4 #m2ReviewBack::after { content:"←"; font:400 30px/1 Arial,sans-serif; }
+body.pay-mode-4 .m2-success-check::after { content:""; width:24px; height:13px; border-left:3px solid currentColor; border-bottom:3px solid currentColor; transform:translateY(-3px) rotate(-45deg); }
+body.pay-mode-4 .m2-search-ico { position:relative; display:block; width:16px; height:16px; border:2px solid currentColor; border-radius:50%; margin-right:13px; }
+body.pay-mode-4 .m2-search-ico::before { content:none; }
+body.pay-mode-4 .m2-search-ico::after { content:""; position:absolute; width:7px; height:2px; background:currentColor; right:-5px; bottom:-3px; transform:rotate(45deg); }
+.m4-demo-label,.m4-green-card,.m4-asset-symbol,.m4-account-tail,#m4-balance-visibility { display:none; }
+body.pay-mode-4 .m4-demo-label { display:block; color:var(--cash-muted); font:600 10px/1.4 var(--font-family,sans-serif); letter-spacing:.05em; text-align:center; padding:3px 16px 5px; flex-shrink:0; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet .m2-panel {
+ width:100%; max-width:450px; margin:0 auto; height:76dvh; max-height:76dvh;
+ border:0; border-radius:34px 34px 0 0; box-shadow:none; overflow:hidden;
+ background:var(--cash-bg); color:var(--cash-text);
+}
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-pill-wrap { padding:8px 0 2px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-pill { width:34px; height:4px; background:var(--cash-muted); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-screen { padding:4px 16px max(20px,env(safe-area-inset-bottom)); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-header { justify-content:flex-start; min-height:44px; margin-bottom:20px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-header-title,body.pay-mode-4 .m2-results-lbl { display:none; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-icon-btn { width:44px; height:44px; left:-8px; background:transparent; color:var(--cash-text); border:0; box-shadow:none; font-size:25px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-pay-to-line { font-size:clamp(24px,7vw,30px); font-weight:600; letter-spacing:-.045em; margin-bottom:8px; color:var(--cash-text); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-amt,body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-recip-name { color:var(--cash-text); font-weight:600; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-amt::before { content:"$"; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-to-gray { color:var(--cash-muted); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-search-wrap { margin:14px 0 20px; background:var(--cash-surface); padding:0 12px; box-shadow:none; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-search-input { min-width:0; width:100%; padding:10px 0; background:transparent; color:var(--cash-text); font-size:16px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-search-ico,body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-search-input::placeholder { color:var(--cash-muted); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-result-item { padding:14px 0; gap:14px; min-height:74px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-result-av { width:46px; height:46px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-result-name { font-size:16px; font-weight:600; color:var(--cash-text); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-result-handle { font-size:15px; color:var(--cash-muted); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-recip-row { gap:8px; margin-bottom:8px; min-width:0; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-recip-av { width:30px; height:30px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-recip-name { font-size:clamp(24px,7vw,30px); letter-spacing:-.04em; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-for-gray { display:none; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenNote { position:relative; padding-bottom:92px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-note-area { position:absolute; left:16px; right:16px; bottom:14px; height:60px; min-height:0; flex:none; justify-content:center; border-top:1px solid var(--cash-line); padding-right:102px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-note-input { font-size:16px; font-weight:400; padding:12px 0; color:var(--cash-text); caret-color:#3484ff; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-note-input::placeholder { color:var(--cash-muted); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-note-divider { display:none; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-continue-btn,
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-continue-btn.has-note { position:absolute; bottom:22px; right:16px; margin:0; min-width:86px; height:42px; padding:10px 16px; border-radius:999px; background:var(--cash-text); color:var(--cash-bg); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-continue-btn:disabled { opacity:.45; cursor:default; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-review-note { color:var(--cash-text); text-transform:none; font-size:clamp(24px,7vw,30px); font-weight:600; letter-spacing:-.04em; line-height:1.3; margin:0 0 26px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-styleit-btn { align-self:flex-start; width:auto; padding:10px 18px; border:1px solid var(--cash-muted); color:var(--cash-text); margin:12px 0 24px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-balance-row { margin-top:auto; border:1px solid var(--cash-line); border-radius:20px; padding:16px 14px; gap:8px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-cash-ico { width:22px; height:22px; background:#00bf45; color:#003d12; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-bal-label { font-size:15px; color:var(--cash-text); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2BalVal,body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-chevron-v { color:var(--cash-muted); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-warn-txt { margin:24px 0 16px; text-align:center; font-size:10px; color:var(--cash-muted); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-review-pay-btn { min-height:48px; padding:14px; background:var(--cash-text); color:var(--cash-bg); box-shadow:none; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Success { background:var(--cash-bg); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-success-topbar { display:flex; position:absolute; top:env(safe-area-inset-top); left:16px; right:16px; height:58px; align-items:center; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-success-menu-wrap { display:none; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-success-icon-btn { color:var(--cash-text); width:44px; height:44px; font-size:28px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-success-inner { min-height:0; padding:calc(66px + env(safe-area-inset-top)) 16px max(26px,env(safe-area-inset-bottom)); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-success-inner .m4-demo-label { text-align:left; padding:0 0 16px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-success-check { width:60px; height:60px; background:#00bf45; color:#003d12; font-size:30px; margin-bottom:24px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-success-title { color:var(--cash-text); font-size:clamp(26px,7vw,32px); font-weight:600; letter-spacing:-.045em; line-height:1.15; overflow-wrap:anywhere; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-receipt-btn,body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-done-btn { min-height:48px; padding:12px; margin-top:8px; border-radius:999px; border:0; font-size:16px; box-shadow:none; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-receipt-btn { background:var(--cash-surface); color:var(--cash-text); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-receipt-btn i { display:none; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-done-btn { background:var(--cash-text); color:var(--cash-bg); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Notif { display:none !important; }
+body.pay-mode-4 .m2-icon-btn:focus-visible,body.pay-mode-4 #m4-balance-visibility:focus-visible { outline:2px solid var(--cash-muted); outline-offset:2px; }
+/* The Home card peeks out behind the rounded balance surface. */
+body.pay-mode-4.m4-home-page .app-container { background:var(--cash-surface); }
+body.pay-mode-4.m4-home-page .app-header { padding:12px 16px; min-height:70px; background:transparent; flex-shrink:0; }
+body.pay-mode-4.m4-home-page .m4-tools [aria-label="QR code options"] { display:none; }
+body.pay-mode-4.m4-home-page #m4-card-toggle { display:flex; justify-content:space-between; align-items:flex-start; flex-shrink:0; height:75px; margin:30px 30px -26px; padding:12px 16px; border:0; border-radius:24px 24px 0 0; background:var(--cash-bg); font-size:14px; }
+body.pay-mode-4.m4-home-page .main-content { position:relative; background:var(--cash-bg); border-radius:34px 34px 0 0; padding:12px 16px 100px; }
+body.pay-mode-4.m4-home-page #balance-preview-card { padding:16px 0 0; }
+body.pay-mode-4.m4-home-page .balance-header { justify-content:flex-start; gap:8px; color:var(--cash-text); }
+body.pay-mode-4.m4-home-page .m4-account-tail { display:inline; }
+body.pay-mode-4.m4-home-page #m4-balance-visibility { display:flex; align-items:center; justify-content:center; margin-left:auto; background:none; color:var(--cash-text); border:0; width:36px; height:36px; cursor:pointer; }
+#m4-balance-visibility svg { width:23px; height:23px; }
+#m4-balance-visibility .m4-eye-slash { display:none; }
+body.pay-mode-4.m4-home-page .m4-balance-hidden .m4-eye-slash { display:block; }
+body.pay-mode-4.m4-home-page .m4-balance-hidden .balance-amount { position:relative; visibility:hidden; }
+body.pay-mode-4.m4-home-page .m4-balance-hidden .balance-amount::after { content:"••••••"; position:absolute; left:0; visibility:visible; }
+body.pay-mode-4.m4-home-page #balance-preview-card .balance-amount { font-size:clamp(36px,11vw,48px); white-space:nowrap; margin-top:0; }
+body.pay-mode-4.m4-home-page .account-info { display:none; }
+body.pay-mode-4.m4-home-page .balance-actions { margin-top:64px; gap:8px; }
+body.pay-mode-4.m4-home-page .balance-actions button { min-height:48px; font-size:16px; }
+body.pay-mode-4.m4-home-page .paychecks-link-card,body.pay-mode-4.m4-home-page .section-header { display:none; }
+body.pay-mode-4.m4-home-page .m4-green-card { display:flex; align-items:center; gap:8px; width:100%; border:0; border-radius:22px; padding:24px 18px; margin:14px 0; background:var(--cash-surface); color:var(--cash-text); font:inherit; font-size:14px; text-align:left; cursor:pointer; }
+body.pay-mode-4.m4-home-page .m4-green-card span:last-child { margin-left:auto; font-size:12px; color:var(--cash-muted); }
+.m4-green-symbol { font-size:24px; color:#00bf45; }
+body.pay-mode-4.m4-home-page .savings-list-card { padding:24px 20px; min-height:125px; border-radius:24px; }
+body.pay-mode-4.m4-home-page .savings-list-card .title { font-size:16px; }
+body.pay-mode-4.m4-home-page .savings-list-card .balance { font-size:30px; }
+body.pay-mode-4.m4-home-page .savings-list-card .subtitle { font-size:13px; margin-top:4px; }
+body.pay-mode-4.m4-home-page .savings-list-card:has(.m4-asset-symbol) .icon-container { width:56px; height:56px; border:1px solid var(--cash-line); border-radius:50%; }
+body.pay-mode-4.m4-home-page .savings-list-card:has(.m4-asset-symbol) .icon,body.pay-mode-4.m4-home-page .savings-list-card > .chevron-icon { display:none; }
+body.pay-mode-4.m4-home-page .m4-asset-symbol { display:flex; height:100%; justify-content:center; align-items:center; color:#00bf45; font-size:29px; }
+@media (max-height:600px) {
+ body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-header { margin-bottom:6px; }
+ body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-styleit-btn { margin:8px 0 16px; }
+ body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-warn-txt { margin:14px 0; }
+}
+@media (prefers-reduced-motion:reduce) {
+ body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-panel,body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Success { transition:none; }
+ body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-success-check { animation:none; }
+}
+
+/* Mode 4 keyboard layout follows the visual viewport, not the page height. */
+body.pay-mode-4.m4-pay-page .amount-text { font-family:"CashMarket",sans-serif; font-weight:normal; letter-spacing:-.045em; }
+body.pay-mode-4 .mode4-faceid-overlay { justify-content:flex-start; padding-top:max(14px,env(safe-area-inset-top)); gap:6px; background:rgba(0,0,0,.16); box-sizing:border-box; }
+body.pay-mode-4 .mode4-faceid-overlay video { width:130px; height:130px; border-radius:18%; background:#000; object-fit:cover; animation:m4-face-reveal .3s ease-out; }
+body.pay-mode-4 .mode4-faceid-overlay span { background:var(--cash-bg); color:var(--cash-text); border-radius:999px; padding:4px 10px; font-size:11px; }
+@keyframes m4-face-reveal { from { opacity:0; transform:translateY(-10px) scale(.9); } to { opacity:1; transform:none; } }
+@media(prefers-reduced-motion:reduce) { body.pay-mode-4 .mode4-faceid-overlay video { animation:none; } }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet .m2-panel { transition:transform .28s cubic-bezier(.32,.72,0,1); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet.m4-keyboard-open .m2-panel { border-radius:28px 28px 0 0; transition:transform .28s ease; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet.m4-keyboard-open .m2-screen { padding-bottom:12px; overflow:hidden; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet.m4-keyboard-open .m2-header { min-height:36px; margin-bottom:8px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet.m4-keyboard-open .m2-search-wrap { margin:8px 0 10px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet.m4-keyboard-open .m2-results-list { min-height:0; overflow:auto; overscroll-behavior:contain; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet.m4-keyboard-open #m2ScreenNote { padding-bottom:76px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet.m4-keyboard-open .m2-note-area { bottom:4px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet.m4-keyboard-open .m2-continue-btn { bottom:12px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-search-input,
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-note-input { font-size:16px; }
+/* Existing card artwork peeks above the balance surface and opens the full card. */
+body.pay-mode-4.m4-home-page #m4-card-toggle { position:relative; display:block; height:112px; margin:20px 24px -26px; padding:0; overflow:hidden; background:#1b1b1b; color:#fff; text-align:left; }
+body.pay-mode-4.m4-home-page .m4-card-artwork { display:block; position:relative; height:190px; border-radius:24px; padding:22px; background:#1b1b1b; color:#f5f5f5; }
+.m4-card-artwork .card-chip { width:32px; height:24px; border-radius:5px; border:1px solid #b8aa87; background:#d4c6a3; }
+.m4-card-artwork .card-number { display:flex; gap:10px; margin-top:18px; font:14px/1.4 "SF Mono",monospace; letter-spacing:1px; }
+.m4-card-artwork .card-footer { display:flex; align-items:center; justify-content:space-between; margin-top:26px; }
+.m4-card-artwork .card-holder-name { font-size:12px; }
+.m4-card-artwork .visa-logo img { width:45px; height:auto; }
+.m4-card-artwork .m4-artwork-label { position:absolute; right:20px; top:20px; font-size:10px; letter-spacing:.1em; color:#ccc; }
+body.pay-mode-4.m4-home-page .savings-list-card:has(.m4-asset-symbol) .icon { display:block; width:36px; height:36px; object-fit:contain; border-radius:50%; }
+body.pay-mode-4.m4-home-page .savings-list-card:has(.m4-asset-symbol) .m4-asset-symbol { display:none; }
+body.pay-mode-4.m4-home-page .savings-list-card:has(.m4-asset-symbol) .icon-container { display:flex; align-items:center; justify-content:center; }
+
+
+/* Mode 4 recipient search: compact chrome, one scrollable results region. */
+/* Restore the earlier review and completion appearance without touching Pay typography or search. */
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet[data-screen="m2ScreenReview"] .m2-panel {
+ width:calc(100% - 24px); max-width:426px; margin:0 auto max(12px,env(safe-area-inset-bottom));
+ height:58dvh; max-height:58dvh; border-radius:28px; border:1px solid var(--cash-line); box-shadow:0 16px 48px #0003;
+}
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview { padding:8px 24px 24px; overflow-y:auto; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-header { min-height:44px; margin-bottom:6px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-pay-to-line { font-size:24px; font-weight:700; line-height:1.3; letter-spacing:normal; margin-bottom:14px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-recip-row { gap:10px; margin-bottom:18px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-recip-name { font-size:20px; font-weight:700; letter-spacing:normal; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-review-note { font-size:28px; font-weight:800; line-height:1.2; letter-spacing:normal; margin-bottom:16px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-styleit-btn { margin:0 0 20px; padding:8px 18px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-balance-row { margin-top:0; border:0; border-radius:10px; padding:10px 2px; gap:10px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-cash-ico { width:28px; height:28px; color:#fff; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-warn-txt { margin:0 0 18px; text-align:left; font-size:12px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-review-pay-btn { padding:18px; font-size:17px; font-weight:700; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Success .m2-success-inner { padding:calc(60px + env(safe-area-inset-top)) 28px max(40px,env(safe-area-inset-bottom)); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Success .m2-success-check { width:58px; height:58px; background:#22c55e; color:#fff; font-size:28px; margin-bottom:24px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Success .m2-success-title { font-size:34px; font-weight:800; letter-spacing:normal; line-height:1.25; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Success :is(.m2-receipt-btn,.m2-done-btn) { margin-top:0; padding:18px; min-height:56px; font-size:17px; font-weight:700; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Success .m2-receipt-btn { margin-bottom:10px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Success .m2-receipt-btn i { display:inline-block; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) :is(#m2SearchClose,#m2NoteBack,#m2ReviewBack)::after { content:""; position:absolute; left:13px; top:12px; width:14px; height:14px; border-left:2px solid currentColor; border-bottom:2px solid currentColor; transform:rotate(45deg); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) :is(#m2SearchClose,#m2NoteBack,#m2ReviewBack)::before { content:""; position:absolute; left:12px; top:19px; width:23px; height:2px; background:currentColor; }
+body.pay-mode-4.m4-pay-page .amount-text { font-family:"CashMarket",sans-serif; font-weight:800; font-size:clamp(80px,24vw,112px); line-height:1.05; letter-spacing:-.035em; }
+body.pay-mode-4.m4-pay-page .amount-display { min-height:160px; padding:12px 16px 28px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet .m2-panel.m2-panel-fullscreen { height:100dvh; max-height:100dvh; border-radius:0; padding-top:env(safe-area-inset-top); box-sizing:border-box; }
+body.pay-mode-4 .m4-green-logo { width:26px; height:26px; flex:0 0 26px; border-radius:7px; object-fit:contain; }
+body.pay-mode-4.m4-home-page .explore-grid { margin:24px 0; gap:16px; }
+body.pay-mode-4.m4-home-page .explore-card { min-width:0; padding:20px 16px; border-radius:22px; background:var(--cash-surface); color:var(--cash-text); }
+body.pay-mode-4.m4-home-page .more-ways-list { margin-top:24px; border-radius:22px; overflow:hidden; }
+body.pay-mode-4.m4-home-page .more-ways-list .list-item { min-height:78px; padding:18px; gap:14px; background:var(--cash-surface); }
+body.pay-mode-4.m4-home-page .more-ways-list .list-item + .list-item { border-top:1px solid var(--cash-line); }
+#auto-reload-balance { cursor:pointer; }
+#auto-reload-balance:focus-visible { outline:2px solid #3981c9; outline-offset:-3px; }
+@media(max-height:700px) {
+ body.pay-mode-4.m4-pay-page .amount-display { min-height:110px; padding-bottom:18px; }
+ body.pay-mode-4.m4-pay-page .amount-text { font-size:84px; }
+}
+body.pay-mode-4 #m2Sheet { --m4-safe-top:env(safe-area-inset-top,0px); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet[data-screen="m2ScreenSearch"] .m2-panel { border-radius:28px 28px 0 0; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenSearch { overflow:hidden; padding:4px 20px max(12px,env(safe-area-inset-bottom)); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenSearch .m2-header { min-height:40px; margin:0 0 8px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2SearchClose { left:-8px; width:44px; height:40px; color:var(--cash-muted); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2SearchClose::after { font-size:30px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet[data-screen="m2ScreenSearch"] > .m2-panel > .m4-demo-label { position:absolute; top:28px; right:20px; padding:0; max-width:calc(100% - 88px); text-align:right; font-size:10px; letter-spacing:.015em; pointer-events:none; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenSearch .m2-pay-to-line { margin:0 0 16px; font-size:clamp(23px,6.7vw,28px); line-height:1.2; letter-spacing:-.025em; overflow-wrap:anywhere; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet #m2ScreenSearch .m2-search-wrap { height:42px; min-height:42px; margin:0 0 12px; padding:0 14px; gap:0; border:0; border-radius:22px; background:var(--cash-surface); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenSearch .m2-search-input { height:42px; padding:0; line-height:normal; font-size:16px; font-weight:400; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenSearch .m2-search-ico { width:14px; height:14px; border-width:1.6px; margin-right:12px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2SearchClr { background:transparent; color:var(--cash-muted); width:28px; height:36px; margin-right:-5px; flex-shrink:0; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2SearchClr i { display:none; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2SearchClr::after { content:"×"; font:24px/1 Arial,sans-serif; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ResultsList { min-height:0; flex:1 1 0; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; padding:0 0 12px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ResultsList .m2-result-item { min-height:68px; box-sizing:border-box; padding:10px 0; gap:12px; border-radius:12px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ResultsList .m2-result-av { width:44px; height:44px; box-shadow:none; font-size:18px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ResultsList .m2-result-item > div:last-child { min-width:0; flex:1; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ResultsList .m2-result-name { font-size:16px; line-height:1.3; letter-spacing:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ResultsList .m2-result-handle { margin-top:3px; font-size:14px; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2SearchSpinner { padding:18px 0; margin:0; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet.m4-keyboard-open #m2ScreenSearch { padding-bottom:0; }
+
+/* Reference completion buttons, shared by Pay modes 2, 3 and 4. */
+body.pay-mode-2 #m2Success { --completion-button-bg:#fff; --completion-button-ink:#000; --completion-secondary-bg:#202020; --completion-secondary-ink:#fff; }
+body.pay-mode-2.mode2-white:not(.pay-mode-3) #m2Success,
+body.pay-mode-3.mode3-white #m2Success { --completion-button-bg:#111; --completion-button-ink:#fff; --completion-secondary-bg:#eee; --completion-secondary-ink:#111; }
+body.pay-mode-2 #m2Success :is(#m2ReceiptButton,#m2DoneBtn) {
+ width:100%; min-height:50px; flex-shrink:0; border:0; border-radius:999px; box-shadow:none;
+ padding:14px 20px; margin:0; font-family:var(--font-family); font-size:17px; font-weight:600; line-height:1.3;
+}
+body.pay-mode-2 #m2Success #m2ReceiptButton { margin-bottom:8px; background:var(--completion-secondary-bg); color:var(--completion-secondary-ink); }
+body.pay-mode-2 #m2Success #m2ReceiptButton i { display:none; }
+body.pay-mode-2 #m2Success #m2DoneBtn { background:var(--completion-button-bg); color:var(--completion-button-ink); }
+body.pay-mode-2 #m2Success .m4-demo-label { display:block; padding:0 0 16px; font-size:10px; line-height:1.4; color:#888; }
+/* Earlier, roomier iOS-style recipient sheet. Keyboard behavior remains tap-only. */
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet[data-screen="m2ScreenSearch"] .m2-panel { border-radius:34px 34px 0 0; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenSearch { padding:8px 16px max(16px,env(safe-area-inset-bottom)); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenSearch .m2-header { min-height:44px; margin-bottom:20px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenSearch .m2-pay-to-line { font-size:clamp(24px,7vw,30px); margin-bottom:14px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet #m2ScreenSearch .m2-search-wrap { height:46px; min-height:46px; margin:0 0 18px; border-radius:24px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ResultsList .m2-result-item { min-height:76px; padding:14px 0; gap:14px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ResultsList .m2-result-av { width:46px; height:46px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet.m4-keyboard-open #m2ScreenSearch .m2-header { min-height:36px; margin-bottom:8px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet.m4-keyboard-open #m2ScreenSearch .m2-search-wrap { margin-bottom:10px; }
+
+/* Login and optional Pay-only palette. */
+#loginScreen .login-card h1 { font-family:CashMarket,var(--font-family),sans-serif; font-weight:700; letter-spacing:-.045em; color:#087b36; }
+#loginScreen .login-education { background:transparent; border:0; padding:8px 0; color:var(--access-muted); }
+#loginScreen .login-education svg { display:none; }
+#loginScreen .login-education h2, #loginScreen .login-education p { color:var(--access-muted); }
+#loginScreen .login-card input { border:1px solid #000; }
+#loginScreen .login-card input:focus-visible { outline:2px solid #000; outline-offset:2px; border-color:#000; box-shadow:none; }
+body.dark-mode #loginScreen .login-card input { border-color:#aeb8b1; }
+body.dark-mode #loginScreen .login-card input:focus-visible { outline-color:#fff; }
+#loginScreen .login-contact-btn { background:#e6f7ec; color:#075d29; border:1px solid #98d5af; border-radius:999px; }
+#loginScreen .login-settings-btn { border:0; background:#f0f4f1; color:#143820; border-radius:50%; }
+#loginScreen .mode-seg { border-radius:999px; }
+#loginScreen .mode-seg-btn { border-radius:999px; }
+#contactModal { backdrop-filter:none; -webkit-backdrop-filter:none; background:rgba(0,0,0,.25); }
+#contactModal .contact-card { background:var(--cash-bg,#fff); color:var(--cash-text,#111); border-radius:26px; padding:24px; max-width:420px; width:calc(100% - 32px); box-sizing:border-box; }
+#contactModal .contact-row { border:1px solid var(--cash-line,#ddd); border-radius:16px; padding:14px; margin-top:10px; box-shadow:none; }
+#contactModal .contact-card-header h2, #contactModal .contact-row-label { color:var(--cash-text,#111); }
+.m4-pay-colors { margin-top:20px; padding-top:16px; border-top:1px solid var(--cash-line,#ddd); }
+.m4-pay-colors label { display:block; margin:12px 0; font-size:14px; }
+.m4-pay-colors select { display:block; width:100%; min-height:44px; margin-top:8px; }
+.m4-pay-colors p { font-size:12px; line-height:1.5; color:var(--cash-muted,#666); }
+body.pay-mode-4.m4-pay-page, html:has(body.pay-mode-4.m4-pay-page) { background:var(--m4-pay-bg,#00d632) !important; }
+body.pay-mode-4.m4-pay-page .pay-app-container { background:var(--m4-pay-bg,#00d632); }
+body.pay-mode-4.m4-pay-page :is(.amount-text,.keypad-btn,.m4-icon), body.pay-mode-4.m4-pay-page .bottom-nav .nav-button, body.pay-mode-4.m4-pay-page #nav-balance-display { color:var(--m4-pay-ink,#000); }
+body.pay-mode-4.m4-pay-page #pay-btn { background:var(--m4-pay-ink,#000); color:var(--m4-pay-bg,#00d632); }
+body.pay-mode-4.m4-pay-page :is(#pool-btn,#request-btn) { background:#8882; color:var(--m4-pay-ink,#000); }
+/* Mobile sheet geometry; input focus is always user initiated in Mode 4. */
+body.pay-mode-4.m4-home-page #balance-preview-card .balance-amount { font-size:clamp(44px,12vw,52px); line-height:1.12; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet .m2-panel:not(.m2-panel-fullscreen),
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet[data-screen="m2ScreenReview"] .m2-panel {
+ width:100%; max-width:450px; margin:0 auto; height:80dvh; max-height:80dvh;
+ border:0; border-radius:34px 34px 0 0; box-shadow:none;
+}
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview { padding:8px 16px max(22px,env(safe-area-inset-bottom)); }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-header { margin-bottom:20px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-pay-to-line { font-size:clamp(24px,7vw,30px); margin-bottom:8px; letter-spacing:-.035em; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-recip-row { margin-bottom:10px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-recip-name { font-size:clamp(24px,7vw,30px); letter-spacing:-.035em; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-review-note { font-size:clamp(24px,7vw,30px); font-weight:600; line-height:1.22; overflow-wrap:anywhere; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-balance-row { margin-top:auto; border:1px solid var(--cash-line); border-radius:20px; padding:16px 14px; gap:8px; flex-shrink:0; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-cash-ico { width:22px; height:22px; color:#003d12; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-warn-txt { margin:24px 0 16px; text-align:center; font-size:10px; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2ScreenReview .m2-review-pay-btn { min-height:50px; padding:14px; flex-shrink:0; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2SearchClose::before { display:none; }
+body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2SearchClose::after { content:'×'; position:static; width:auto; height:auto; border:0; transform:none; font:36px/1 Arial,sans-serif; }
+#m2ScreenSearch.m2-search-loading #m2ResultsList { display:none; }
+#m2ScreenSearch.m2-search-loading #m2SearchSpinner { display:flex; flex:1; min-height:80px; align-items:center; justify-content:center; margin:0; padding:0; }
+body.pay-mode-2 #m2SearchSpinner [data-cash-inline-loader] { width:40px; height:40px; flex:0 0 40px; }
+.m2-empty-results { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:160px; height:100%; text-align:center; padding:20px; box-sizing:border-box; color:var(--cash-text,#fff); font-size:15px; }
+.m2-empty-results p { color:var(--cash-muted,#888); font-size:14px; line-height:1.5; margin:10px 0; }
+body.pay-mode-4 .mode4-faceid-overlay { animation:m4-face-overlay-in .18s ease-out; transition:opacity .18s ease,transform .18s ease; }
+body.pay-mode-4 .mode4-faceid-overlay.is-leaving { opacity:0; transform:translateY(-8px); }
+@keyframes m4-face-overlay-in { from { opacity:0; } to { opacity:1; } }
+#m4-card-preview { height:calc(100dvh - env(safe-area-inset-top)); max-height:calc(100dvh - env(safe-area-inset-top)); border-radius:26px 26px 0 0; }
+body.pay-mode-4.m4-home-page #m4-card-toggle { transition:height .22s ease; }
+@media(prefers-reduced-motion:reduce) { body.pay-mode-4 .mode4-faceid-overlay, body.pay-mode-4.m4-home-page #m4-card-toggle { animation:none; transition:none; } }
