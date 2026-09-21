@@ -170,6 +170,74 @@
 
 
 
+  let notificationAudio;
+  const soundEnabledKey = 'cashAppNotificationSound';
+  const soundVolumeKey = 'cashAppNotificationVolume';
+  const soundVolume = () => {
+    const stored = localStorage.getItem(soundVolumeKey);
+    const value = stored === null ? 50 : Number(stored);
+    return Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 50;
+  };
+  window.CashNotificationSound = {
+    unlock() {
+      if (localStorage.getItem(soundEnabledKey) !== 'true') return;
+      try {
+        const Audio = window.AudioContext || window.webkitAudioContext;
+        if (!Audio) return;
+        notificationAudio ||= new Audio();
+        notificationAudio.resume().catch(() => {});
+      } catch (_) { /* Audio must never block the app. */ }
+    },
+    play() {
+      if (localStorage.getItem(soundEnabledKey) !== 'true' || !soundVolume()) return;
+      if (!notificationAudio || notificationAudio.state !== 'running') return;
+      try {
+        const start = notificationAudio.currentTime;
+        [660, 880].forEach((frequency, index) => {
+          const tone = notificationAudio.createOscillator();
+          const gain = notificationAudio.createGain();
+          tone.frequency.value = frequency;
+          const at = start + index * 0.13;
+          gain.gain.setValueAtTime(0, at);
+          gain.gain.linearRampToValueAtTime(soundVolume() / 100 * 0.16, at + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.22);
+          tone.connect(gain); gain.connect(notificationAudio.destination);
+          tone.onended = () => { tone.disconnect(); gain.disconnect(); };
+          tone.start(at); tone.stop(at + 0.24);
+        });
+      } catch (_) { /* Unsupported audio remains silent. */ }
+    }
+  };
+  function syncNotificationSettings() {
+    document.querySelectorAll('.notification-settings').forEach(group => {
+      const enabled = localStorage.getItem(soundEnabledKey) === 'true';
+      group.querySelector('[data-sound-enabled]').checked = enabled;
+      group.querySelector('[data-sound-volume]').value = soundVolume();
+      group.querySelector('output').textContent = soundVolume() + '%';
+      group.querySelector('button').disabled = !enabled || !soundVolume();
+    });
+  }
+  function prepareNotificationSettings(container) {
+    if (!container || container.querySelector('.notification-settings')) return;
+    const group = document.createElement('section');
+    group.className = 'notification-settings';
+    group.innerHTML = '<h3>Notification sound</h3><label><input type="checkbox" data-sound-enabled> Enable sound</label><label>Volume <output>50%</output><input type="range" min="0" max="100" step="1" data-sound-volume aria-label="Notification volume"></label><button type="button">Preview sound</button>';
+    container.append(group);
+    group.addEventListener('input', event => {
+      if (event.target.matches('[data-sound-enabled]')) {
+        localStorage.setItem(soundEnabledKey, String(event.target.checked));
+        window.CashNotificationSound.unlock();
+      }
+      if (event.target.matches('[data-sound-volume]')) localStorage.setItem(soundVolumeKey, event.target.value);
+      syncNotificationSettings();
+    });
+    group.querySelector('button').addEventListener('click', async () => {
+      window.CashNotificationSound.unlock();
+      try { await notificationAudio?.resume(); window.CashNotificationSound.play(); } catch (_) {}
+    });
+    syncNotificationSettings();
+  }
+  window.addEventListener('storage', syncNotificationSettings);
   function preparePayColors(container) {
     if (!container || container.querySelector('.m4-pay-colors')) return;
     const group = document.createElement('div');
@@ -209,6 +277,8 @@
       dialog.querySelector('input').addEventListener('change',event=>localStorage.setItem('cashAppMode4FaceId',String(event.target.checked)));
     }
     preparePayColors(dialog);
+    prepareNotificationSettings(dialog);
+    syncNotificationSettings();
     applyPayColors();
     dialog.querySelector('select').value=localStorage.getItem('cashAppMode4Style') || 'white';
     dialog.querySelector('input').checked=localStorage.getItem('cashAppMode4FaceId')==='true';
@@ -429,6 +499,8 @@
   });
 
   const init = () => {
+    prepareNotificationSettings(document.querySelector('#settingsModal .settings-card'));
+    prepareNotificationSettings(document.querySelector('#personal-edit-overlay .edit-content'));
     applyMode4();
     ensureNav();
     enforceLogout();
@@ -440,4 +512,3 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
   else init();
 })();
-
