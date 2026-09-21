@@ -2084,7 +2084,7 @@ body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet.m4-keyboard-open[data-scree
 body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet.m4-keyboard-open[data-screen="m2ScreenSearch"] #m2ScreenSearch { padding-bottom:8px; }
 body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Sheet.m4-keyboard-open[data-screen="m2ScreenSearch"] #m2ResultsList { min-height:0; }
 html.m4-sheet-locked { overflow:hidden; overscroll-behavior:none; }
-html.m4-sheet-locked body .pay-app-container { position:fixed; top:0; left:0; right:0; bottom:auto; height:var(--m4-frozen-height); min-height:var(--m4-frozen-height); max-height:var(--m4-frozen-height); overflow:hidden; overscroll-behavior:none; }
+html.m4-sheet-locked body.pay-mode-4.m4-pay-page .pay-app-container { position:fixed; top:var(--m4-viewport-top, 0px); left:0; right:0; bottom:auto; height:var(--m4-frozen-height); min-height:var(--m4-frozen-height); max-height:var(--m4-frozen-height); overflow:hidden; overscroll-behavior:none; }
 html.m4-sheet-locked .pay-main { overflow:hidden; touch-action:none; }
 body.pay-mode-2 #m2ScreenSearch.m2-search-loading #m2SearchSpinner { display:flex; flex:0 0 64px; min-height:64px; align-items:center; justify-content:center; padding:0; margin:0; }
 body.pay-mode-2 #m2ScreenSearch.m2-search-loading #m2SearchSpinner [data-cash-inline-loader] { width:34px; height:34px; flex-basis:34px; }
@@ -3498,6 +3498,9 @@ body.pay-mode-3 #m2Success .m2-success-topbar { display:none; }
           if (!s || !s.classList.contains('open')) return;
           var vv = window.visualViewport;
           if (!vv) return;
+          if (document.documentElement.classList.contains('m4-sheet-locked')) {
+            document.body.style.setProperty('--m4-viewport-top', vv.offsetTop + 'px');
+          }
           var kbH = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
           var panel = _getPanel();
           var fixedPanel = _isFixedPanel(panel);
@@ -3569,8 +3572,17 @@ body.pay-mode-3 #m2Success .m2-success-topbar { display:none; }
         mode4ScrollLock = {
           x: window.scrollX, y: window.scrollY,
           styles: ['position','top','left','width','overflow'].map(key => [key,body.style[key]]),
-          shell, inert: shell?.inert || false
+          shell, inert: shell?.inert || false,
+          layout: []
         };
+        // Freeze viewport-dependent keypad spacing while only the sheet resizes.
+        const frozenProperties = ['font-size','padding-top','padding-bottom','row-gap','margin-top','min-height'];
+        shell?.querySelectorAll('.amount-display,.amount-text,.pay-keypad,.keypad-btn,.pay-actions').forEach(element => {
+          const computed = getComputedStyle(element);
+          const values = frozenProperties.map(key => [key, computed.getPropertyValue(key)]);
+          mode4ScrollLock.layout.push([element, element.getAttribute('style')]);
+          values.forEach(([key,value]) => element.style.setProperty(key,value));
+        });
         body.style.position = 'fixed';
         body.style.top = `${-mode4ScrollLock.y}px`;
         body.style.left = `${-mode4ScrollLock.x}px`;
@@ -3587,7 +3599,9 @@ body.pay-mode-3 #m2Success .m2-success-topbar { display:none; }
         mode4ScrollLock = null;
         document.documentElement.classList.remove('m4-sheet-locked');
         saved.styles.forEach(([key,value]) => { document.body.style[key] = value; });
+        saved.layout.forEach(([element,style]) => style === null ? element.removeAttribute('style') : element.setAttribute('style',style));
         document.body.style.removeProperty('--m4-frozen-height');
+        document.body.style.removeProperty('--m4-viewport-top');
         if (saved.shell) saved.shell.inert = saved.inert;
         window.scrollTo({left:saved.x,top:saved.y,behavior:'instant'});
       }
@@ -4184,6 +4198,7 @@ body.pay-mode-3 #m2Success .m2-success-topbar { display:none; }
       if (reviewPay) {
         reviewPay.addEventListener('click', async () => {
           if (reviewPay.disabled) return;
+          window.CashNotificationSound?.unlock();
           reviewPay.disabled = true;
           const mode4FacialOn = window.CashMode4?.isFaceIdEnabled?.() === true;
           try { await window.CashMode4?.faceId(); }
@@ -4286,8 +4301,9 @@ body.pay-mode-3 #m2Success .m2-success-topbar { display:none; }
       }
       function showNotif() {
         if (!notifEl || !notifMsg) return;
+        window.CashNotificationSound?.play();
         const nm = m2Contact ? (m2Contact.cashtag || m2Contact.name || '').replace(/^[$@]/,'') : '';
-        notifMsg.textContent = `You paid ${nm} ${fmtNotif(m2Amt)}.`;
+        notifMsg.textContent = `Demo payment: ${fmtNotif(m2Amt)} to ${nm}. No money moved.`;
         notifEl.style.transform = '';
         notifEl.style.opacity = '';
         notifEl.classList.remove('m2-hidden');
