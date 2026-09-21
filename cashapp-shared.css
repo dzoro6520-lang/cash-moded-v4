@@ -324,7 +324,12 @@ body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-receipt-btn,body.pay-mode-4.pay-
 body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-receipt-btn { background:var(--cash-surface); color:var(--cash-text); }
 body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-receipt-btn i { display:none; }
 body.pay-mode-4.pay-mode-2:not(.pay-mode-3) .m2-done-btn { background:var(--cash-text); color:var(--cash-bg); }
-body.pay-mode-4.pay-mode-2:not(.pay-mode-3) #m2Notif { display:none !important; }
+#m2Notif { box-sizing:border-box; }
+.notification-settings { margin:20px 0; padding:16px; border:1px solid #8885; border-radius:16px; }
+.notification-settings label { display:flex; align-items:center; gap:10px; margin:8px 0; }
+.notification-settings input[type="checkbox"] { width:20px; height:20px; accent-color:#00b832; }
+.notification-settings input[type="range"] { display:block; width:100%; height:32px; padding:0; border:0; box-shadow:none; accent-color:#00b832; }
+.notification-settings button { margin-top:8px; padding:10px 16px; border-radius:24px; cursor:pointer; }
 body.pay-mode-4 .m2-icon-btn:focus-visible,body.pay-mode-4 #m4-balance-visibility:focus-visible { outline:2px solid var(--cash-muted); outline-offset:2px; }
 /* The Home card peeks out behind the rounded balance surface. */
 body.pay-mode-4.m4-home-page .app-container { background:var(--cash-surface); }
