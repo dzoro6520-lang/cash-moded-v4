@@ -4303,7 +4303,7 @@ body.pay-mode-3 #m2Success .m2-success-topbar { display:none; }
         if (!notifEl || !notifMsg) return;
         window.CashNotificationSound?.play();
         const nm = m2Contact ? (m2Contact.cashtag || m2Contact.name || '').replace(/^[$@]/,'') : '';
-        notifMsg.textContent = `Demo payment: ${fmtNotif(m2Amt)} to ${nm}. No money moved.`;
+        notifMsg.textContent = `Sent payment: ${fmtNotif(m2Amt)} to ${nm}. Money Sent.`;
         notifEl.style.transform = '';
         notifEl.style.opacity = '';
         notifEl.classList.remove('m2-hidden');
